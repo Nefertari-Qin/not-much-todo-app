@@ -2,8 +2,12 @@ package ui;
 
 import java.util.Scanner;
 
+// Reference:
+// I learned many of the interaction methods
+// from LittleLoggingCalculator in Basics 4's lecture lab
+// and from practice problem FitLifeGymChain in long-form-problem-starters
+
 // Represent a class with user interaction
-// Many interaction methods learned from LittleLoggingCalculator from Basics 4's lecture lab
 public class ToDoUI {
     private static final String CREATE_TASK_COMMAND = "new task";
     private static final String CROSS_TASK_COMMAND = "cross task";
@@ -17,6 +21,8 @@ public class ToDoUI {
         input = new Scanner(System.in);
     }
 
+    // MODIFIES: this
+    // EFFECTS: deal with general user input
     private void handleUserInput() {
         printInstructions();
         String inputString;
@@ -27,6 +33,8 @@ public class ToDoUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: interpret user input
     private void parseInput(String string) {
         if (string.length() > 0) {
             switch (string) {
@@ -37,7 +45,7 @@ public class ToDoUI {
                     handleCrossTask();
                     break;
                 case CLOSE_APP_COMMAND:
-                    endProgram();
+                    endApp();
                     break;
                 default:
                     System.out.println("Sorry, I didn't understand that. Please try again.");
@@ -48,7 +56,7 @@ public class ToDoUI {
     }
 
     private void handleCrossTask() {
-        // stub
+        System.out.println("\nYou crossed off a task from the ToDo list");
     }
 
     private void handleCreateNewTask() {
@@ -60,13 +68,24 @@ public class ToDoUI {
         System.out.println("ToDo task: '" + task + "' was made by " + creatorName + ".");
     }
 
+    // EFFECTS: get user input
+    private String getInputString() {
+        String str = "";
+        if (input.hasNext()) {
+            str = input.nextLine();
+        }
+        return str;
+    }
 
-    private void endProgram() {
+    // MODIFIES: this
+    // EFFECTS: end the application
+    private void endApp() {
         runApp = false;
         input.close();
         System.out.println("Closing ...");
     }
 
+    // EFFECTS: print initial user instruction
     private void printInstructions() {
         System.out.println("\nSome things you can do:\n");
         System.out.println("Enter '" + CREATE_TASK_COMMAND + "' to create a new ToDo task");
@@ -74,6 +93,7 @@ public class ToDoUI {
         System.out.println("Enter '" + CLOSE_APP_COMMAND + "' to close NotMuchToDo App");
     }
 
+    // EFFECTS: format the user input
     private String getFormattedInputString() {
         String str = "";
         if (input.hasNext()) {
@@ -83,15 +103,8 @@ public class ToDoUI {
         return str;
     }
 
-    private String getInputString() {
-        String str = "";
-        if (input.hasNext()) {
-            str = input.nextLine();
-        }
-        return str;
-    }
-
-    //EFFECTS: removes white space and quotation marks around s
+    //MODIFIES: this
+    //EFFECTS: format s by removing white space and quotation marks around s
     private String makeFormattedString(String s) {
         s = s.toLowerCase();
         s = s.trim();
