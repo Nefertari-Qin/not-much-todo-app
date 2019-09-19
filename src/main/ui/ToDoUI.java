@@ -57,6 +57,7 @@ public class ToDoUI {
 
     private void handleCrossTask() {
         System.out.println("\nYou crossed off a task from the ToDo list");
+        printInstructions();
     }
 
     private void handleCreateNewTask() {
@@ -66,6 +67,7 @@ public class ToDoUI {
         System.out.println("\nEnter the name of the task creator:");
         String creatorName = getInputString();
         System.out.println("ToDo task: '" + task + "' was made by " + creatorName + ".");
+        printInstructions();
     }
 
     // EFFECTS: get user input
@@ -114,7 +116,7 @@ public class ToDoUI {
 
     public static void main(String[] args) {
         System.out.println("Welcome to NotMuchToDo Application!");
-        ToDoUI myToDo = new ToDoUI();
-        myToDo.handleUserInput();
+        ToDoUI toDoUI = new ToDoUI();
+        toDoUI.handleUserInput();
     }
 }
