@@ -1,6 +1,6 @@
 package ui;
 
-import model.ToDoTask;
+import model.RegularTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +11,17 @@ import java.util.Scanner;
 // from LittleLoggingCalculator in Basics 4's lecture lab
 // and from practice problem FitLifeGymChain in long-form-problem-starters
 
-// Represent a class with user interaction
+// Represent a ToDoApp class with user interaction
 public class ToDoApp {
     private static final String CREATE_TASK_COMMAND = "new task";
-    private static final String CROSS_TASK_COMMAND = "cross task";
     private static final String ALL_TASK_COMMAND = "all task";
+    private static final String CHECK_DONE_TASK_COMMAND = "check done";
+    private static final String CLEAN_DONE_TASK_COMMAND = "clean done";
     private static final String CLOSE_APP_COMMAND = "close app";
 
     private boolean runApp;
     private Scanner input;
-    private List<ToDoTask> tasks;
+    private List<RegularTask> tasks;
 
     public ToDoApp() {
         runApp = true;
@@ -30,31 +31,18 @@ public class ToDoApp {
 
     // MODIFIES: this
     // EFFECTS: add task to tasks list
-    private void addTask(ToDoTask task) {
+    private void addTask(RegularTask task) {
         tasks.add(task);
     }
 
-    // EFFECTS: returns true if task is a already made ToDoTask in App
-    private boolean containsTask(String task) {
-        // stub
-        return false;
-    }
-
-    // EFFECTS: suggest create new ToDoTask if no task is found,
-    // otherwise print all ToDoTasks being made
-    private void printAllTasks() {
-        if (tasks.size() == 0) {
-            System.out.println("No task need to do yet. Let's create a new ToDoTask!");
-            printInstructions();
-        } else {
-            System.out.println("All tasks to do:");
-            for (ToDoTask task : tasks) {
-                System.out.println(task.getTask()
-                        + " by " + task.getCreator()
-                        + ", due on " + task.getDueDate()
-                        + ". \nCompletion: "  + task.isCompleted());
+    // EFFECTS: returns the ToDoTask if it is already made ToDoTask in App
+    private RegularTask getTask(String task) {
+        for (RegularTask regularTask : tasks) {
+            if (regularTask.getTask().equals(task)) {
+                return regularTask;
             }
         }
+        return null;
     }
 
     // MODIFIES: this
@@ -66,23 +54,34 @@ public class ToDoApp {
         while (runApp) {
             inputString = getFormattedInputString();
             if (inputString.length() > 0) {
-                parseInput(inputString);
+                parseSomeInput(inputString);
             }
         }
     }
 
     // MODIFIES: this
     // EFFECTS: interpret user input
-    private void parseInput(String string) {
+    private void parseSomeInput(String string) {
         switch (string) {
             case CREATE_TASK_COMMAND:
                 handleCreateNewTask();
                 break;
-            case CROSS_TASK_COMMAND:
-                handleCrossTask();
-                break;
             case ALL_TASK_COMMAND:
-                printAllTasks();
+                handlePrintAllTasks();
+                break;
+            default:
+                parseMoreInput(string);
+                break;
+        }
+    }
+
+    private void parseMoreInput(String string) {
+        switch (string) {
+            case CHECK_DONE_TASK_COMMAND:
+                handleCheckDoneTask();
+                break;
+            case CLEAN_DONE_TASK_COMMAND:
+                handleCleanDoneTask();
                 break;
             case CLOSE_APP_COMMAND:
                 endApp();
@@ -94,7 +93,6 @@ public class ToDoApp {
         }
     }
 
-
     // MODIFIES: this
     // EFFECTS: create a new ToDoTask and add it to tasks
     private void handleCreateNewTask() {
@@ -105,15 +103,58 @@ public class ToDoApp {
         String creator = getInputString();
         System.out.println("\nEnter the due date of the task with valid date format: YYYY-MM-DD:");
         String dueDate = getInputString();
-        ToDoTask toDoTask = new ToDoTask(task, creator, dueDate);
+        RegularTask regularTask = new RegularTask(task, creator, dueDate);
         System.out.println("ToDo task: '" + task + "' was made by " + creator + ", and will due on " + dueDate);
-        addTask(toDoTask);
+        addTask(regularTask);
         printInstructions();
     }
 
-    private void handleCrossTask() {
-        System.out.println("\nYou crossed off a task from the ToDo list");
+    // EFFECTS: suggest create new ToDoTask if no task is found,
+    // otherwise print all ToDoTasks being made
+    private void handlePrintAllTasks() {
+        if (tasks.size() == 0) {
+            System.out.println("No task need to do yet. Let's create a new ToDoTask!");
+            printInstructions();
+        } else {
+            System.out.println("All tasks to do:");
+            for (RegularTask task : tasks) {
+                if (task != null) {
+                    System.out.println(task.getTask()
+                            + " by " + task.getCreator()
+                            + ", due on " + task.getDueDate()
+                            + ". \nCompletion: " + task.isCompleted());
+                }
+            }
+        }
+    }
+
+    // EFFECTS: cross the ToDoTask from tasks if ToDoTask is a made
+    private void handleCheckDoneTask() {
+        System.out.println("\nEnter the task you want to cross:");
+        String strTask = getInputString();
+        RegularTask taskChecked = getTask(strTask);
+        if (taskChecked != null && !taskChecked.isCompleted()) {
+            taskChecked.setIsCompleted(true);
+            System.out.println("\nYou checked '" + strTask + "' as done from the ToDo list");
+        } else if (taskChecked.isCompleted()) {
+            System.out.println(strTask + " was already completed, try to finish and cross off other task.");
+        } else {
+            System.out.println(strTask + "is no in the ToDo list.");
+        }
         printInstructions();
+    }
+
+    // TODO: I stopped here ... tired ... Have a little rest :) come back soon.
+    // EFFECTS: clean up all tasks which is already been set as done.
+    private void handleCleanDoneTask() {
+        int totalCompleted = 0;
+        for (RegularTask task : tasks) {
+            if (task.isCompleted()) {
+                tasks.remove(task);
+                totalCompleted += 1;
+            }
+        }
+        System.out.println("You cleaned off " + totalCompleted + " number of tasks.");
     }
 
     // MODIFIES: this
@@ -129,7 +170,8 @@ public class ToDoApp {
         System.out.println("\nSome things you can do:\n");
         System.out.println("Enter '" + CREATE_TASK_COMMAND + "' to create a new ToDo task");
         System.out.println("Enter '" + ALL_TASK_COMMAND + "' to see all ToDo tasks");
-        System.out.println("Enter '" + CROSS_TASK_COMMAND + "' to cross off a ToDo task");
+        System.out.println("Enter '" + CHECK_DONE_TASK_COMMAND + "' to cross off a ToDo task");
+        System.out.println("Enter '" + CLEAN_DONE_TASK_COMMAND + "' to clean all completed ToDo tasks");
         System.out.println("Enter '" + CLOSE_APP_COMMAND + "' to close NotMuchToDo App");
     }
 
