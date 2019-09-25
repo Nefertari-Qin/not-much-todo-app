@@ -1,15 +1,11 @@
 package ui;
 
-import model.RegularTask;
+import model.NormalTask;
+import model.ToDoTask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-// Reference:
-// I learned many of the interaction methods
-// from LittleLoggingCalculator in Basics 4's lecture lab
-// and from practice problem FitLifeGymChain in long-form-problem-starters
 
 // Represent a ToDoApp class with user interaction
 public class ToDoApp {
@@ -21,7 +17,7 @@ public class ToDoApp {
 
     private boolean runApp;
     private Scanner input;
-    private List<RegularTask> tasks;
+    private List<ToDoTask> tasks;
 
     public ToDoApp() {
         runApp = true;
@@ -31,13 +27,13 @@ public class ToDoApp {
 
     // MODIFIES: this
     // EFFECTS: add task to tasks list
-    private void addTask(RegularTask task) {
+    private void addTask(ToDoTask task) {
         tasks.add(task);
     }
 
     // EFFECTS: returns the ToDoTask if it is already made ToDoTask in App
-    private RegularTask getTask(String task) {
-        for (RegularTask regularTask : tasks) {
+    private ToDoTask getTask(String task) {
+        for (ToDoTask regularTask : tasks) {
             if (regularTask.getTask().equals(task)) {
                 return regularTask;
             }
@@ -103,7 +99,7 @@ public class ToDoApp {
         String creator = getInputString();
         System.out.println("\nEnter the due date of the task with valid date format: YYYY-MM-DD:");
         String dueDate = getInputString();
-        RegularTask regularTask = new RegularTask(task, creator, dueDate);
+        NormalTask regularTask = new NormalTask(task, creator, dueDate);
         System.out.println("ToDo task: '" + task + "' was made by " + creator + ", and will due on " + dueDate);
         addTask(regularTask);
         printInstructions();
@@ -117,7 +113,7 @@ public class ToDoApp {
             printInstructions();
         } else {
             System.out.println("All tasks to do:");
-            for (RegularTask task : tasks) {
+            for (ToDoTask task : tasks) {
                 if (task != null) {
                     System.out.println(task.getTask()
                             + " by " + task.getCreator()
@@ -132,28 +128,30 @@ public class ToDoApp {
     private void handleCheckDoneTask() {
         System.out.println("\nEnter the task you want to cross:");
         String strTask = getInputString();
-        RegularTask taskChecked = getTask(strTask);
-        if (taskChecked != null && !taskChecked.isCompleted()) {
-            taskChecked.setIsCompleted(true);
-            System.out.println("\nYou checked '" + strTask + "' as done from the ToDo list");
+        ToDoTask taskChecked = getTask(strTask);
+        if (taskChecked == null) {
+            System.out.println(strTask + " is no in the ToDo list.");
         } else if (taskChecked.isCompleted()) {
             System.out.println(strTask + " was already completed, try to finish and cross off other task.");
         } else {
-            System.out.println(strTask + "is no in the ToDo list.");
+            taskChecked.markCompleted();
+            System.out.println("\nYou checked '" + strTask + "' as done from the ToDo list");
         }
         printInstructions();
     }
 
-    // TODO: I stopped here ... tired ... Have a little rest :) come back soon.
     // EFFECTS: clean up all tasks which is already been set as done.
     private void handleCleanDoneTask() {
         int totalCompleted = 0;
-        for (RegularTask task : tasks) {
-            if (task.isCompleted()) {
-                tasks.remove(task);
+        List<ToDoTask> cleanedTasks = new ArrayList<>();
+        for (ToDoTask task : tasks) {
+            if (!task.isCompleted()) {
+                cleanedTasks.add(task);
+            } else {
                 totalCompleted += 1;
             }
         }
+        this.tasks = cleanedTasks;
         System.out.println("You cleaned off " + totalCompleted + " number of tasks.");
     }
 

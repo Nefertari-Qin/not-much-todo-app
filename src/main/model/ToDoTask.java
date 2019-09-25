@@ -1,6 +1,6 @@
 package model;
 
-public interface Task {
+public interface ToDoTask {
     // setters
     // MODIFIES: this
     // EFFECTS: set the task content of this
@@ -16,7 +16,9 @@ public interface Task {
 
     // MODIFIES: this
     // EFFECTS: set the completeness of this based on isCompleted
-    void setIsCompleted(boolean isCompleted);
+    void markCompleted();
+
+    void markUncompleted();
 
     // getters
     // EFFECTS: return the task content of this

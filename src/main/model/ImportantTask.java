@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class RegularTask implements Task {
+public class ImportantTask implements ToDoTask {
     private String task;
     private String creator;
     private Date dueDate;
@@ -14,8 +14,8 @@ public class RegularTask implements Task {
 
     // Constructor
     // MODIFIES: this
-    // EFFECTS: construct a RegularTask with task content, creator name, due date and is not completed.
-    public RegularTask(String task, String creator, String dueDate) {
+    // EFFECTS: construct a UrgentTask with task content, creator name, due date and is not completed.
+    public ImportantTask(String task, String creator, String dueDate) {
         this.task = task;
         this.creator = creator;
         setDueDate(dueDate);
@@ -49,13 +49,6 @@ public class RegularTask implements Task {
             System.out.println("Invalid date format. Please try again with valid date format: YYYY-MM-DD");
             return false;
         }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set the completeness of this based on isCompleted
-    @Override
-    public void setIsCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
     }
 
     // getters
@@ -93,5 +86,19 @@ public class RegularTask implements Task {
         Date today = new Date();
         this.isDue = !today.before(dueDate);
         return this.isDue;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: mark this as completed
+    @Override
+    public void markCompleted() {
+        isCompleted = true;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: mark this as uncompleted
+    @Override
+    public void markUncompleted() {
+        isCompleted = false;
     }
 }
