@@ -99,9 +99,9 @@ public class ToDoApp {
         String creator = getInputString();
         System.out.println("\nEnter the due date of the task with valid date format: YYYY-MM-DD:");
         String dueDate = getInputString();
-        NormalTask regularTask = new NormalTask(task, creator, dueDate);
+        NormalTask normalTask = new NormalTask(task, creator, dueDate);
         System.out.println("ToDo task: '" + task + "' was made by " + creator + ", and will due on " + dueDate);
-        addTask(regularTask);
+        addTask(normalTask);
         printInstructions();
     }
 
