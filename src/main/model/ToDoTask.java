@@ -1,40 +1,24 @@
 package model;
 
+import java.util.Calendar;
+
 public interface ToDoTask {
-    // setters
-    // MODIFIES: this
-    // EFFECTS: set the task content of this
-    void setTask(String task);
+    // getters
+    String getTaskContent();
 
-    // MODIFIES: this
-    // EFFECTS: set the task creator of this
-    void setCreator(String creator);
+    Calendar getDueDate();
 
-    // MODIFIES: this
-    // EFFECTS: set the due date of this to dueDate
-    boolean setDueDate(String dueDate);
+    boolean isCompleted();
 
-    // MODIFIES: this
-    // EFFECTS: set the completeness of this based on isCompleted
+    boolean isDue();
+
+    void setTaskContent(String taskContent);
+
+    void setDueDate(int year, int month, int day);
+
     void markCompleted();
 
     void markUncompleted();
 
-    // getters
-    // EFFECTS: return the task content of this
-    String getTask();
-
-    // EFFECTS: return the task creator of this
-    String getCreator();
-
-    // EFFECTS: return the task due date of this
-    String getDueDate();
-
-    // EFFECTS: return true is this is completed; false OW.
-    boolean isCompleted();
-
-    // compare current date with the due date
-    // MODIFIES: this
-    // EFFECTS: return true if current date is >= due date; false OW.
-    boolean isDue();
+    String getFormattedStringDueDate();
 }

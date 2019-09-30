@@ -1,104 +1,76 @@
 package model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 public class ImportantTask implements ToDoTask {
-    private String task;
-    private String creator;
-    private Date dueDate;
-
+    private String taskContent;
+    private Calendar dueDate;
     private boolean isCompleted;
     private boolean isDue;
 
-    // Constructor
-    // MODIFIES: this
-    // EFFECTS: construct a UrgentTask with task content, creator name, due date and is not completed.
-    public ImportantTask(String task, String creator, String dueDate) {
-        this.task = task;
-        this.creator = creator;
-        setDueDate(dueDate);
+    public ImportantTask(String taskContent) {
+        this.taskContent = taskContent;
         this.isCompleted = false;
     }
 
-    // setters
-    // MODIFIES: this
-    // EFFECTS: set the task content of this
-    @Override
-    public void setTask(String task) {
-        this.task = task;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set the task creator of this
-    @Override
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set the due date of this to dueDate
-    @Override
-    public boolean setDueDate(String dueDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            this.dueDate = sdf.parse(dueDate);
-            return true;
-        } catch (ParseException e) {
-            System.out.println("Invalid date format. Please try again with valid date format: YYYY-MM-DD");
-            return false;
-        }
-    }
-
     // getters
-    // EFFECTS: return the task content of this
     @Override
-    public String getTask() {
-        return this.task;
+    public String getTaskContent() {
+        return taskContent;
     }
 
-    // EFFECTS: return the task creator of this
     @Override
-    public String getCreator() {
-        return this.creator;
+    public Calendar getDueDate() {
+        return this.dueDate;
     }
 
-    // EFFECTS: return the task due date of this
-    @Override
-    public String getDueDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = sdf.format(this.dueDate);
-        return strDate;
-    }
-
-    // EFFECTS: return true is this is completed; false OW.
     @Override
     public boolean isCompleted() {
-        return this.isCompleted;
+        return isCompleted;
     }
 
-    // compare current date with the due date
-    // MODIFIES: this
-    // EFFECTS: return true if current date is >= due date; false OW.
     @Override
     public boolean isDue() {
-        Date today = new Date();
-        this.isDue = !today.before(dueDate);
+        Calendar currentDate = Calendar.getInstance();
+        this.isDue = currentDate.before(dueDate);
         return this.isDue;
     }
 
-    // MODIFIES: this
-    // EFFECTS: mark this as completed
     @Override
-    public void markCompleted() {
-        isCompleted = true;
+    public void setTaskContent(String taskContent) {
+        this.taskContent = taskContent;
     }
 
-    // MODIFIES: this
-    // EFFECTS: mark this as uncompleted
+    @Override
+    public void setDueDate(int year, int month, int day) {
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.set(year, month, day);
+        this.dueDate = currentDate;
+    }
+
+    @Override
+    public void markCompleted() {
+        this.isCompleted = true;
+    }
+
     @Override
     public void markUncompleted() {
-        isCompleted = false;
+        this.isCompleted = false;
+    }
+
+    @Override
+    public String getFormattedStringDueDate() {
+        String yearString = makeFormattedNumber(dueDate.get(Calendar.YEAR));
+        String monthString = makeFormattedNumber(dueDate.get(Calendar.MONTH));
+        String dayString = makeFormattedNumber(dueDate.get(Calendar.DATE));
+        return yearString + "-" + monthString + "-" + dayString;
+    }
+
+    private String makeFormattedNumber(int i) {
+        if (i < 10) {
+            return "" + "0" + i;
+        } else {
+            return "" + i;
+        }
     }
 }

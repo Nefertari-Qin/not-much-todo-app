@@ -22,9 +22,9 @@ public class ToDoListTest {
     @BeforeEach
     public void runBefore() {
         testToDoList = new ToDoList(testName);
-        testTask1 = new NormalTask("ntt1","c1", "2000-08-18");
-        testTask2 = new NormalTask("ntt2","c2", "2000-07-19");
-        testTask3 = new NormalTask("ntt3", "c3", "2019-09-25");
+        testTask1 = new NormalTask("ntt1");
+        testTask2 = new NormalTask("ntt2");
+        testTask3 = new NormalTask("ntt3");
         testToDoList.addTask(testTask1);
         testToDoList.addTask(testTask2);
         testToDoList.addTask(testTask3);
@@ -36,18 +36,23 @@ public class ToDoListTest {
     }
 
     @Test
-    public void testGetToDoTasks() {
-        List<ToDoTask> tasksListGot = testToDoList.getToDoTasks();
-        assertTrue(tasksListGot.contains(testTask1));
-        assertTrue(tasksListGot.contains(testTask2));
-        assertTrue(tasksListGot.contains(testTask3));
-        assertEquals(3, tasksListGot.size());
+    public void testSetToDoTask() {
+        List<ToDoTask> tasks = new ArrayList<>();
+        tasks.add(testTask1);
+        testToDoList.setToDoTasks(tasks);
+        assertEquals(tasks, testToDoList.getToDoTasks());
     }
 
     @Test
     public void testSetToDoListName() {
         testToDoList.setToDoListName(otherName);
         assertEquals(otherName, testToDoList.getToDoListName());
+    }
+
+    @Test
+    public void testGetTask() {
+        assertEquals(testTask3, testToDoList.getTask("ntt3"));
+        assertEquals(null, testToDoList.getTask("whatever"));
     }
 
     @Test

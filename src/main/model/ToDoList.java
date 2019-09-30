@@ -24,6 +24,10 @@ public class ToDoList {
         return toDoTasks;
     }
 
+    public void setToDoTasks(List<ToDoTask> toDoTasks) {
+        this.toDoTasks = toDoTasks;
+    }
+
     // MODIFIES: this
     // EFFECTS: set the name of this
     public void setToDoListName(String toDoListName) {
@@ -52,6 +56,15 @@ public class ToDoList {
     // EFFECTS: return true if task is in the ToDoList
     public boolean containTask(ToDoTask task) {
         return toDoTasks.contains(task);
+    }
+
+    public ToDoTask getTask(String task) {
+        for (ToDoTask taskWanted : toDoTasks) {
+            if (taskWanted.getTaskContent().equals(task)) {
+                return taskWanted;
+            }
+        }
+        return null;
     }
 
     // MODIFIES: this

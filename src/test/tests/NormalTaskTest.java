@@ -4,83 +4,62 @@ import model.NormalTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Calendar;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NormalTaskTest {
-    private NormalTask testNormalTask;
-    private String taskName = "normalTaskName";
-    private String creatorName = "NQ";
-    private String dueDate = "2000-08-18";
-
+    private NormalTask testNormal;
+    private String tc1 = "content1";
+    private String tc2 = "content2";
 
     @BeforeEach
     public void runBefore() {
-        testNormalTask = new NormalTask(taskName, creatorName, dueDate);
+        testNormal = new NormalTask(tc1);
     }
 
     @Test
     public void testConstructor() {
-        assertEquals(taskName, testNormalTask.getTask());
-        assertEquals(creatorName, testNormalTask.getCreator());
-        assertEquals(dueDate, testNormalTask.getDueDate());
-        assertFalse(testNormalTask.isCompleted());
+        assertEquals(tc1, testNormal.getTaskContent());
+        assertFalse(testNormal.isCompleted());
     }
 
     @Test
-    public void testSetTask() {
-        assertEquals(taskName, testNormalTask.getTask());
-        testNormalTask.setTask("anotherName");
-        assertEquals("anotherName", testNormalTask.getTask());
+    public void testSetDueDate() {
+        testNormal.setDueDate(2019,9,30);
+        assertEquals(2019, testNormal.getDueDate().get(Calendar.YEAR));
+        assertEquals(9, testNormal.getDueDate().get(Calendar.MONTH));
+        assertEquals(30, testNormal.getDueDate().get(Calendar.DATE));
     }
 
     @Test
-    public void testSetCreator() {
-        assertEquals(creatorName, testNormalTask.getCreator());
-        testNormalTask.setCreator("NG");
-        assertEquals("NG", testNormalTask.getCreator());
+    public void testGetFormattedDueDate() {
+        testNormal.setDueDate(2019,9,30);
+        assertEquals("2019-09-30", testNormal.getFormattedStringDueDate());
     }
 
     @Test
-    public void testSetDueDateValidFormat(){
-        assertEquals(dueDate, testNormalTask.getDueDate());
-        assertTrue(testNormalTask.setDueDate("2019-09-22"));
-        assertEquals("2019-09-22", testNormalTask.getDueDate());
+    public void testIsDue() {
+        assertFalse(testNormal.isDue());
     }
 
     @Test
-    public void testSetDueDateInvalidFormat(){
-        assertEquals(dueDate, testNormalTask.getDueDate());
-        assertFalse(testNormalTask.setDueDate("20190922"));
+    public void testSetTaskContent() {
+        testNormal.setTaskContent(tc2);
+        assertEquals(tc2, testNormal.getTaskContent());
     }
 
     @Test
     public void testMarkAsCompleted() {
-        testNormalTask.markCompleted();
-        assertTrue(testNormalTask.isCompleted());
+        testNormal.markCompleted();
+        assertTrue(testNormal.isCompleted());
     }
 
     @Test
     public void testMarkAsUncompleted() {
-        testNormalTask.markCompleted();
-        assertTrue(testNormalTask.isCompleted());
-        testNormalTask.markUncompleted();
-        assertFalse(testNormalTask.isCompleted());
-    }
-
-    @Test
-    public void testIsDueBeforeDue() {
-        assertTrue(testNormalTask.isDue());
-    }
-
-    @Test
-    public void testIsDueAtDue() {
-        testNormalTask.setDueDate("2019-09-22");
-        assertTrue(testNormalTask.isDue());
-    }
-
-    @Test
-    public void testIsDueAfterDue() {
-        testNormalTask.setDueDate("2019-12-22");
-        assertFalse(testNormalTask.isDue());
+        testNormal.markCompleted();
+        assertTrue(testNormal.isCompleted());
+        testNormal.markUncompleted();
+        assertFalse(testNormal.isCompleted());
     }
 }
