@@ -1,15 +1,20 @@
 package ui;
 
-import model.ImportantTask;
-import model.NormalTask;
-import model.ToDoList;
-import model.ToDoTask;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import model.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class App {
+public class App implements Loadable, Saveable {
+    private static final String TODOLISTS_JSON = "./data/todolists.json";
+
     private static final String CREATE_LIST_COMMAND = "new list";
     private static final String ALL_LIST_COMMAND = "all lists";
     private static final String ENTER_LIST_COMMAND = "enter list";
@@ -26,16 +31,25 @@ public class App {
     private Scanner input;
     private List<ToDoList> toDoLists;
     ToDoList listCurrentIn;
-    // private List<Note> notes;
 
+    // Constructor:
+    // EFFECTS: create a new App ready to run
     public App() {
         runApp = true;
         input = new Scanner(System.in);
         toDoLists = new ArrayList<>();
-        // notes = new ArrayList<>();
+    }
+
+    public void addList(ToDoList toDoList) {
+        toDoLists.add(toDoList);
+    }
+
+    public List<ToDoList> getToDoLists() {
+        return toDoLists;
     }
 
     public void run() {
+        load(TODOLISTS_JSON);
         System.out.println("\nSome things you can do:");
         printIntroInstructions();
         String inputString;
@@ -85,6 +99,7 @@ public class App {
         System.out.println("ToDo list: '" + listName + "' was created successfully.");
         System.out.println("You are now in " + listName + " .\n");
         printInListExtraOptions();
+        getInListExtraInput();
     }
 
     private void handlePrintAllListsName() {
@@ -110,7 +125,17 @@ public class App {
         } else {
             System.out.println("You are now in " + listName + ".\n");
             printInListExtraOptions();
+            getInListExtraInput();
         }
+    }
+
+    private ToDoList getList(String listName) {
+        for (ToDoList list : toDoLists) {
+            if (list.getToDoListName().equals(listName)) {
+                return list;
+            }
+        }
+        return null;
     }
 
     private void printInListExtraOptions() {
@@ -118,13 +143,9 @@ public class App {
         System.out.println("Enter '" + ALL_TASK_COMMAND + "' to see all ToDo tasks");
         System.out.println("Enter '" + CHECK_DONE_TASK_COMMAND + "' to mark a ToDo task as done");
         System.out.println("Enter '" + CLEAN_DONE_TASK_COMMAND + "' to clean all completed ToDo tasks");
-        String inputString = getInputString();
-        if (inputString.length() > 0) {
-            parseTaskExtraInput(inputString);
-        }
     }
 
-    private void parseTaskExtraInput(String str) {
+    private void parseInListExtraInput(String str) {
         switch (str) {
             case CREATE_TASK_COMMAND:
                 handleCreateNewTask();
@@ -150,7 +171,6 @@ public class App {
             System.out.println("No task has been created in "
                     + listCurrentIn.getToDoListName()
                     + " yet. \nLet's create a new ToDoTask!\n");
-            printInListExtraOptions();
         } else {
             System.out.println("All tasks to do:");
             for (ToDoTask task : listCurrentIn.getToDoTasks()) {
@@ -162,6 +182,7 @@ public class App {
             }
         }
         printInListExtraOptions();
+        getInListExtraInput();
     }
 
     // EFFECTS: cross the ToDoTask from tasks if ToDoTask is a made
@@ -178,31 +199,24 @@ public class App {
             System.out.println("\nYou checked '" + strTask + "' as done from the ToDo list.\n");
         }
         printInListExtraOptions();
+        getInListExtraInput();
     }
 
     // EFFECTS: clean up all tasks which is already been set as done.
     private void handleCleanDoneTask() {
         int totalCompleted = 0;
-        List<ToDoTask> cleanedTasks = new ArrayList<>();
+        List<ToDoTask> incompleteTasks = new ArrayList<>();
         for (ToDoTask taskToClean : listCurrentIn.getToDoTasks()) {
             if (!taskToClean.isCompleted()) {
-                cleanedTasks.add(taskToClean);
+                incompleteTasks.add(taskToClean);
             } else {
                 totalCompleted += 1;
             }
         }
-        listCurrentIn.setToDoTasks(cleanedTasks);
+        listCurrentIn.setToDoTasks(incompleteTasks);
         System.out.println("You cleaned off " + totalCompleted + " number of tasks.");
         printInListExtraOptions();
-    }
-
-    private ToDoList getList(String listName) {
-        for (ToDoList list : toDoLists) {
-            if (list.getToDoListName().equals(listName)) {
-                return list;
-            }
-        }
-        return null;
+        getInListExtraInput();
     }
 
     // MODIFIES: this
@@ -229,6 +243,7 @@ public class App {
         }
         System.out.println("A new task is successfully added to '" + listCurrentIn.getToDoListName() + "' .\n");
         printInListExtraOptions();
+        getInListExtraInput();
     }
 
     private ToDoTask setNewTaskDueDate(ToDoTask task) {
@@ -252,6 +267,56 @@ public class App {
         runApp = false;
         input.close();
         System.out.println("Closing ...");
+        toDoLists.add(0, listCurrentIn);
+        save(TODOLISTS_JSON);
+    }
+
+    public void save(String file) {
+        toDoLists.add(0, listCurrentIn);
+        Gson gson = new Gson();
+        String listsJson = gson.toJson(toDoLists);
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            System.out.println("Invalid file name, we cannot find the file!");
+        }
+        try {
+            writer.write(listsJson);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Something wrong ... ");
+        }
+    }
+
+    public void load(String file) {
+        Gson gson = new Gson();
+        JsonReader reader = null;
+
+        try {
+            reader = new JsonReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            System.out.println("Invalid file name, we cannot find the file!");
+        }
+
+        ToDoList[] lists = gson.fromJson(reader, ToDoList[].class);
+
+        boolean isFirst = true;
+        for (ToDoList list : lists) {
+            if (isFirst) {
+                listCurrentIn = list;
+                isFirst = false;
+            } else {
+                toDoLists.add(list);
+            }
+        }
+    }
+
+    private void getInListExtraInput() {
+        String inputString = getInputString();
+        if (inputString.length() > 0) {
+            parseInListExtraInput(inputString);
+        }
     }
 
     // EFFECTS: get user input

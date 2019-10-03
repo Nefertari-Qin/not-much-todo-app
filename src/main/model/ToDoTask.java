@@ -2,23 +2,65 @@ package model;
 
 import java.util.Calendar;
 
-public interface ToDoTask {
-    // getters
-    String getTaskContent();
+public class ToDoTask {
+    protected String taskContent;
+    protected Calendar dueDate;
+    protected boolean isCompleted;
+    protected boolean isDue;
 
-    Calendar getDueDate();
+    public ToDoTask(String taskContent) {
+        this.taskContent = taskContent;
+        this.isCompleted = false;
+    }
 
-    boolean isCompleted();
+    public String getTaskContent() {
+        return taskContent;
+    }
 
-    boolean isDue();
+    public Calendar getDueDate() {
+        return this.dueDate;
+    }
 
-    void setTaskContent(String taskContent);
+    public boolean isCompleted() {
+        return isCompleted;
+    }
 
-    void setDueDate(int year, int month, int day);
+    public boolean isDue() {
+        Calendar currentDate = Calendar.getInstance();
+        this.isDue = currentDate.before(dueDate);
+        return this.isDue;
+    }
 
-    void markCompleted();
+    public void setTaskContent(String taskContent) {
+        this.taskContent = taskContent;
+    }
 
-    void markUncompleted();
+    public void setDueDate(int year, int month, int day) {
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.set(year, month, day);
+        this.dueDate = currentDate;
+    }
 
-    String getFormattedStringDueDate();
+    public void markCompleted() {
+        this.isCompleted = true;
+    }
+
+    public void markUncompleted() {
+        this.isCompleted = false;
+    }
+
+    public String getFormattedStringDueDate() {
+        String yearString = makeFormattedNumber(dueDate.get(Calendar.YEAR));
+        String monthString = makeFormattedNumber(dueDate.get(Calendar.MONTH));
+        String dayString = makeFormattedNumber(dueDate.get(Calendar.DATE));
+        return yearString + "-" + monthString + "-" + dayString;
+    }
+
+    private String makeFormattedNumber(int i) {
+        if (i < 10) {
+            return "" + "0" + i;
+        } else {
+            return "" + i;
+        }
+    }
 }
