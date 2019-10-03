@@ -18,6 +18,7 @@ public class App implements Loadable, Saveable {
     private static final String CREATE_LIST_COMMAND = "new list";
     private static final String ALL_LIST_COMMAND = "all lists";
     private static final String ENTER_LIST_COMMAND = "enter list";
+    // private static final String DELETE_LIST_COMMAND = "delete list";
     private static final String CREATE_TASK_COMMAND = "new task";
     private static final String NORMAL_TASK_COMMAND = "normal";
     private static final String IMPORTANT_TASK_COMMAND = "important";
@@ -52,6 +53,12 @@ public class App implements Loadable, Saveable {
     }
 
     // MODIFIES: this
+    // EFFECTS: remove given toDoList from app if it is in the app; OW do nothing
+    public void removeList(ToDoList toDoList) {
+        toDoLists.remove(toDoList);
+    }
+
+    // MODIFIES: this
     // EFFECTS: load the existing app info and run the app
     public void run() {
         load(TODOLISTS_JSON);
@@ -70,7 +77,7 @@ public class App implements Loadable, Saveable {
         System.out.println("Enter '" + CREATE_LIST_COMMAND + "' to create a new ToDo list");
         System.out.println("Enter '" + ALL_LIST_COMMAND + "' to see all ToDo lists");
         System.out.println("Enter '" + ENTER_LIST_COMMAND + "' to enter any one of existed ToDo list");
-        System.out.println("Enter '" + CLOSE_APP_COMMAND + "' to close NotMuchToDo App at any time");
+        System.out.println("Enter '" + CLOSE_APP_COMMAND + "' to close WhateverName App at any time");
     }
 
     // MODIFIES: this
