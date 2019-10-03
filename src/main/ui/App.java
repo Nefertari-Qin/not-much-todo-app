@@ -40,14 +40,19 @@ public class App implements Loadable, Saveable {
         toDoLists = new ArrayList<>();
     }
 
+    // MODIFIES: this
+    // EFFECTS: add the given toDoList to app
     public void addList(ToDoList toDoList) {
         toDoLists.add(toDoList);
     }
 
+    // EFFECTS: return the list of all ToDoLists created in app
     public List<ToDoList> getToDoLists() {
         return toDoLists;
     }
 
+    // MODIFIES: this
+    // EFFECTS: load the existing app info and run the app
     public void run() {
         load(TODOLISTS_JSON);
         System.out.println("\nSome things you can do:");
@@ -115,6 +120,8 @@ public class App implements Loadable, Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: enter the list with the given list name
     private void handleEnterList() {
         System.out.println("Enter the name of the ToDo list you want to enter:");
         String listName = getInputString();
@@ -129,6 +136,7 @@ public class App implements Loadable, Saveable {
         }
     }
 
+    // EFFECTS: return the ToDoList of the given name
     private ToDoList getList(String listName) {
         for (ToDoList list : toDoLists) {
             if (list.getToDoListName().equals(listName)) {
@@ -138,6 +146,7 @@ public class App implements Loadable, Saveable {
         return null;
     }
 
+    // EFFECTS: print extra options while inside a particular list
     private void printInListExtraOptions() {
         System.out.println("Enter '" + CREATE_TASK_COMMAND + "' to create a new ToDo task");
         System.out.println("Enter '" + ALL_TASK_COMMAND + "' to see all ToDo tasks");
@@ -145,13 +154,14 @@ public class App implements Loadable, Saveable {
         System.out.println("Enter '" + CLEAN_DONE_TASK_COMMAND + "' to clean all completed ToDo tasks");
     }
 
+    // EFFECTS: interpret extra user input while in a particular list
     private void parseInListExtraInput(String str) {
         switch (str) {
             case CREATE_TASK_COMMAND:
                 handleCreateNewTask();
                 break;
             case ALL_TASK_COMMAND:
-                handlePrintAllTasksName();
+                handlePrintAllTasksContent();
                 break;
             case CHECK_DONE_TASK_COMMAND:
                 handleCheckDoneTask();
@@ -166,7 +176,8 @@ public class App implements Loadable, Saveable {
         }
     }
 
-    private void handlePrintAllTasksName() {
+    // EFFECTS: print out all existing tasks content
+    private void handlePrintAllTasksContent() {
         if (listCurrentIn.countTasks() == 0) {
             System.out.println("No task has been created in "
                     + listCurrentIn.getToDoListName()
@@ -224,17 +235,19 @@ public class App implements Loadable, Saveable {
     private void handleCreateNewTask() {
         printTaskExtraOptions();
         String str = getInputString();
+        System.out.println("\nEnter the " + str + " task you want to create:");
         createNewTask(str);
     }
 
+    // MODIFIES: this
+    // EFFECTS: create a new task of given str type and
+    //          add it to the ToDoList currently in
     private void createNewTask(String str) {
-        if (str.equals("normal")) {
-            System.out.println("\nEnter the normal task you want to create:");
+        if (str.equals(NORMAL_TASK_COMMAND)) {
             String norTaskContent = getInputString();
             ToDoTask norTask = setNewTaskDueDate(new NormalTask(norTaskContent));
             listCurrentIn.addTask(norTask);
-        } else if (str.equals("important")) {
-            System.out.println("\nEnter the important task you want to create:");
+        } else if (str.equals(IMPORTANT_TASK_COMMAND)) {
             String impTaskContent = getInputString();
             ToDoTask impTask = setNewTaskDueDate(new ImportantTask(impTaskContent));
             listCurrentIn.addTask(impTask);
@@ -246,6 +259,8 @@ public class App implements Loadable, Saveable {
         getInListExtraInput();
     }
 
+    // MODIFIES: task
+    // EFFECTS: set the due date of given task
     private ToDoTask setNewTaskDueDate(ToDoTask task) {
         String regString = "-";
         System.out.println("\nEnter the due date of the task with valid date format: YYYY-MM-DD:");
@@ -258,11 +273,14 @@ public class App implements Loadable, Saveable {
         return task;
     }
 
+    // EFFECTS: print extra options to create new task
     private void printTaskExtraOptions() {
         System.out.println("Enter '" + NORMAL_TASK_COMMAND + "' to create a new Normal Task.");
         System.out.println("Enter '" + IMPORTANT_TASK_COMMAND + "' to create a new Important Task.");
     }
 
+    // MODIFIES: this
+    // EFFECTS: close the app and save the current state of app
     private void endApp() {
         runApp = false;
         input.close();
@@ -271,6 +289,8 @@ public class App implements Loadable, Saveable {
         save(TODOLISTS_JSON);
     }
 
+    // MODIFIES: this
+    // EFFECTS: save all created ToDoLists info in the app
     public void save(String file) {
         toDoLists.add(0, listCurrentIn);
         Gson gson = new Gson();
@@ -289,6 +309,8 @@ public class App implements Loadable, Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: load existing ToDoLists info back to app
     public void load(String file) {
         Gson gson = new Gson();
         JsonReader reader = null;
@@ -312,6 +334,7 @@ public class App implements Loadable, Saveable {
         }
     }
 
+    // EFFECTS: get user input while inside a particular ToDoList
     private void getInListExtraInput() {
         String inputString = getInputString();
         if (inputString.length() > 0) {

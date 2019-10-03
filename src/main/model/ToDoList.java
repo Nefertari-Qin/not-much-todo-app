@@ -70,7 +70,7 @@ public class ToDoList {
 
     // MODIFIES: this
     // EFFECTS: deleted all completed tasks in the ToDoList
-    // and return the number of tasks being deleted
+    //          and return the number of tasks being deleted
     public int deleteCompleted() {
         int completedTasksDeleted = 0;
         List<ToDoTask> cleanedResultTasks = new ArrayList<>();
