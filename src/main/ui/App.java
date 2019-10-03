@@ -292,7 +292,6 @@ public class App implements Loadable, Saveable {
         runApp = false;
         input.close();
         System.out.println("Closing ...");
-        toDoLists.add(0, listCurrentIn);
         save(TODOLISTS_JSON);
     }
 
