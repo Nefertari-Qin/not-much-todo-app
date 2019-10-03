@@ -58,6 +58,7 @@ public class ToDoList {
         return toDoTasks.contains(task);
     }
 
+    // EFFECTS: return the ToDoTask with the given name
     public ToDoTask getTask(String task) {
         for (ToDoTask taskWanted : toDoTasks) {
             if (taskWanted.getTaskContent().equals(task)) {
@@ -71,16 +72,16 @@ public class ToDoList {
     // EFFECTS: deleted all completed tasks in the ToDoList
     // and return the number of tasks being deleted
     public int deleteCompleted() {
-        int deletedCompletedTasks = 0;
+        int completedTasksDeleted = 0;
         List<ToDoTask> cleanedResultTasks = new ArrayList<>();
         for (ToDoTask task : toDoTasks) {
             if (!task.isCompleted()) {
                 cleanedResultTasks.add(task);
             } else {
-                deletedCompletedTasks += 1;
+                completedTasksDeleted += 1;
             }
         }
         this.toDoTasks = cleanedResultTasks;
-        return deletedCompletedTasks;
+        return completedTasksDeleted;
     }
 }
