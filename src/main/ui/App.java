@@ -61,7 +61,7 @@ public class App implements Loadable, Saveable {
     // MODIFIES: this
     // EFFECTS: load the existing app info and run the app
     public void run() {
-        load(TODOLISTS_JSON);
+        // TODO load(TODOLISTS_JSON);
         System.out.println("\nSome things you can do:");
         printIntroInstructions();
         String inputString;

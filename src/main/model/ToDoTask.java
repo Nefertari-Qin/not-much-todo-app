@@ -1,18 +1,25 @@
 package model;
 
+import com.google.gson.InstanceCreator;
+
+import java.lang.reflect.Type;
 import java.util.Calendar;
 
-public class ToDoTask {
+import static model.ImportanceLevel.NORMAL;
+
+public abstract class ToDoTask {
     protected String taskContent;
     protected Calendar dueDate;
     protected boolean isCompleted;
     protected boolean isDue;
+    protected ImportanceLevel level;
 
     // Constructor:
-    // EFFECTS: create a ToDoTask with given taskContent and is incompleted
+    // EFFECTS: create a ToDoTask with given taskContent, importanceLevel REGULAR and is incomplete
     public ToDoTask(String taskContent) {
         this.taskContent = taskContent;
         this.isCompleted = false;
+        this.level = NORMAL;
     }
 
     // EFFECTS: return the content of this
@@ -35,6 +42,11 @@ public class ToDoTask {
         Calendar currentDate = Calendar.getInstance();
         this.isDue = currentDate.before(dueDate);
         return this.isDue;
+    }
+
+    // EFFECTS: return the importance level of task
+    public ImportanceLevel getImportanceLevel() {
+        return level;
     }
 
     // MODIFIES: this
@@ -62,6 +74,8 @@ public class ToDoTask {
     public void markUncompleted() {
         this.isCompleted = false;
     }
+
+    public abstract void upgradeImpLevel();
 
     // EFFECTS: return the due date in yyyy-mm-dd format
     public String getFormattedStringDueDate() {

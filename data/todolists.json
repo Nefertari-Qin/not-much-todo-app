@@ -1,18 +1,40 @@
 [
   {
-    "toDoListName": "l3",
-    "toDoTasks": []
+    "toDoListName": "MT",
+    "toDoTasks": [
+      {
+        "taskContent": "i1",
+        "dueDate": {
+          "year": 2019,
+          "month": 10,
+          "dayOfMonth": 11,
+          "hourOfDay": 14,
+          "minute": 34,
+          "second": 53
+        },
+        "isCompleted": false,
+        "isDue": false,
+        "level": "LOW"
+      }
+    ]
   },
   {
-    "toDoListName": "l1",
-    "toDoTasks": []
-  },
-  {
-    "toDoListName": "l2",
-    "toDoTasks": []
-  },
-  {
-    "toDoListName": "l3",
-    "toDoTasks": []
+    "toDoListName": "MT",
+    "toDoTasks": [
+      {
+        "taskContent": "i1",
+        "dueDate": {
+          "year": 2019,
+          "month": 10,
+          "dayOfMonth": 11,
+          "hourOfDay": 14,
+          "minute": 34,
+          "second": 53
+        },
+        "isCompleted": false,
+        "isDue": false,
+        "level": "LOW"
+      }
+    ]
   }
 ]

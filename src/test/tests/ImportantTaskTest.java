@@ -6,21 +6,29 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 
+import static model.ImportanceLevel.HIGH;
+import static model.ImportanceLevel.MID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImportantTaskTest {
     private ImportantTask testImportant;
-    private String tc1 = "content1";
-    private String tc2 = "content2";
+    private String oc1 = "content1";
+    private String lc1 = "! content1 !";
+    private String mc1 = "!! content1 !!";
+    private String hc1 = "!!! content1 !!!";
+    private String oc2 = "content2";
+    private String lc2 = "! content2 !";
+    private String mc2 = "!! content2 !!";
+    private String hc2 = "!!! content2 !!!";
 
     @BeforeEach
     public void runBefore() {
-        testImportant = new ImportantTask(tc1);
+        testImportant = new ImportantTask(oc1);
     }
 
     @Test
     public void testConstructor() {
-        assertEquals(tc1, testImportant.getTaskContent());
+        assertEquals(lc1, testImportant.getTaskContent());
         assertFalse(testImportant.isCompleted());
     }
 
@@ -30,6 +38,14 @@ public class ImportantTaskTest {
         assertEquals(2019,testImportant.getDueDate().get(Calendar.YEAR));
         assertEquals(8,testImportant.getDueDate().get(Calendar.MONTH));
         assertEquals(18,testImportant.getDueDate().get(Calendar.DATE));
+    }
+
+    @Test
+    public void testSetImportanceLevel() {
+        testImportant.setImportanceLevel(HIGH);
+        assertEquals(hc1, testImportant.getTaskContent());
+        testImportant.setImportanceLevel(MID);
+        assertEquals(mc1, testImportant.getTaskContent());
     }
 
     @Test
@@ -45,8 +61,8 @@ public class ImportantTaskTest {
 
     @Test
     public void testSetTaskContent() {
-        testImportant.setTaskContent(tc2);
-        assertEquals(tc2, testImportant.getTaskContent());
+        testImportant.setTaskContent(oc2);
+        assertEquals(lc2, testImportant.getTaskContent());
     }
 
     @Test
@@ -61,5 +77,15 @@ public class ImportantTaskTest {
         assertTrue(testImportant.isCompleted());
         testImportant.markUncompleted();
         assertFalse(testImportant.isCompleted());
+    }
+
+    @Test
+    public void testUpgradeLevel() {
+        testImportant.upgradeImpLevel();
+        assertEquals(MID, testImportant.getImportanceLevel());
+        testImportant.upgradeImpLevel();
+        assertEquals(HIGH, testImportant.getImportanceLevel());
+        testImportant.upgradeImpLevel();
+        assertEquals(HIGH, testImportant.getImportanceLevel());
     }
 }
