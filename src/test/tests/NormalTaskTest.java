@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 
+import static model.ImportanceLevel.HIGH;
 import static model.ImportanceLevel.NORMAL;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,6 +69,12 @@ public class NormalTaskTest {
     @Test
     public void testUpgradeLevel() {
         testNormal.upgradeImpLevel();
+        assertEquals(NORMAL, testNormal.getImportanceLevel());
+    }
+
+    @Test
+    public void testSetImportantLevel() {
+        testNormal.setImportanceLevel(HIGH);
         assertEquals(NORMAL, testNormal.getImportanceLevel());
     }
 }

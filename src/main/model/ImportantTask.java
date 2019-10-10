@@ -22,6 +22,9 @@ public class ImportantTask extends ToDoTask {
         }
     }
 
+    @Override
+    // MODIFIES: this
+    // EFFECT: set the importance level of this
     public void setImportanceLevel(ImportanceLevel level) {
         this.level = level;
     }

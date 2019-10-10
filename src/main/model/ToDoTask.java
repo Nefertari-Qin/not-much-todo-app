@@ -49,6 +49,8 @@ public abstract class ToDoTask {
         return level;
     }
 
+    public abstract void setImportanceLevel(ImportanceLevel level);
+
     // MODIFIES: this
     // EFFECTS: set the content of this
     public void setTaskContent(String taskContent) {
