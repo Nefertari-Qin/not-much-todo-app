@@ -147,7 +147,7 @@ public class App implements Loadable, Saveable {
 
     // EFFECTS: - if there is a ToDoList of the given name, return the ToDoList
     //          - OW throw ListDoesntExistException
-    private ToDoList getList(String listName) throws ListDoesntExistException {
+    public ToDoList getList(String listName) throws ListDoesntExistException {
         for (ToDoList list : toDoLists) {
             if (list.getToDoListName().equals(listName)) {
                 return list;
