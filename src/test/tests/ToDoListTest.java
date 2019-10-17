@@ -1,5 +1,6 @@
 package tests;
 
+import exceptions.TaskDoesntExistException;
 import model.NormalTask;
 import model.ToDoList;
 import model.ToDoTask;
@@ -50,9 +51,22 @@ public class ToDoListTest {
     }
 
     @Test
-    public void testGetTask() {
-        assertEquals(testTask3, testToDoList.getTask("ntt3"));
-        assertEquals(null, testToDoList.getTask("whatever"));
+    public void testGetTaskThrowNoException() {
+        try {
+            assertEquals(testTask3, testToDoList.getTask("ntt3"));
+        } catch (TaskDoesntExistException e) {
+            fail("No exception should be thrown, caught TaskDoesntExistException");
+        }
+    }
+
+    @Test
+    public void testGetTaskThrowTaskDoesntExistException() {
+        try {
+            testToDoList.getTask("whatever");
+            fail("No exception was thrown; Expect TaskDoesn'tExistException");
+        } catch (TaskDoesntExistException e) {
+            System.out.println("'testGetTaskThrowTaskDoesntExistException' passed!");
+        }
     }
 
     @Test

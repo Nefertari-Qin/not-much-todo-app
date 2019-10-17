@@ -2,6 +2,8 @@ package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import exceptions.ListDoesntExistException;
+import exceptions.TaskDoesntExistException;
 import model.*;
 
 import java.io.FileNotFoundException;
@@ -132,25 +134,26 @@ public class App implements Loadable, Saveable {
     private void handleEnterList() {
         System.out.println("Enter the name of the ToDo list you want to enter:");
         String listName = getInputString();
-        listCurrentIn = getList(listName);
-        if (listCurrentIn == null) {
-            System.out.println("You haven't created '" + listName + "' yet.");
-            printIntroInstructions();
-        } else {
+        try {
+            listCurrentIn = getList(listName);
             System.out.println("You are now in " + listName + ".\n");
             printInListExtraOptions();
             getInListExtraInput();
+        } catch (ListDoesntExistException e) {
+            System.out.println("You haven't created '" + listName + "' yet.");
+            printIntroInstructions();
         }
     }
 
-    // EFFECTS: return the ToDoList of the given name
-    private ToDoList getList(String listName) {
+    // EFFECTS: - if there is a ToDoList of the given name, return the ToDoList
+    //          - OW throw ListDoesntExistException
+    private ToDoList getList(String listName) throws ListDoesntExistException {
         for (ToDoList list : toDoLists) {
             if (list.getToDoListName().equals(listName)) {
                 return list;
             }
         }
-        return null;
+        throw new ListDoesntExistException();
     }
 
     // EFFECTS: print extra options while inside a particular list
@@ -207,17 +210,21 @@ public class App implements Loadable, Saveable {
     private void handleCheckDoneTask() {
         System.out.println("\nEnter the task you want to cross:");
         String strTask = getInputString();
-        ToDoTask taskToCheckDone = listCurrentIn.getTask(strTask);
-        if (taskToCheckDone == null) {
+        ToDoTask taskToCheckDone;
+        try {
+            taskToCheckDone = listCurrentIn.getTask(strTask);
+            if (taskToCheckDone.isCompleted()) {
+                System.out.println(strTask + " was already completed, try to finish and cross off other task.");
+            } else {
+                taskToCheckDone.markCompleted();
+                System.out.println("\nYou checked '" + strTask + "' as done from the ToDo list.\n");
+            }
+        } catch (TaskDoesntExistException e) {
             System.out.println(strTask + " is no in the ToDo list.\n");
-        } else if (taskToCheckDone.isCompleted()) {
-            System.out.println(strTask + " was already completed, try to finish and cross off other task.");
-        } else {
-            taskToCheckDone.markCompleted();
-            System.out.println("\nYou checked '" + strTask + "' as done from the ToDo list.\n");
+        } finally {
+            printInListExtraOptions();
+            getInListExtraInput();
         }
-        printInListExtraOptions();
-        getInListExtraInput();
     }
 
     // EFFECTS: clean up all tasks which is already been set as done.
@@ -304,14 +311,10 @@ public class App implements Loadable, Saveable {
         FileWriter writer = null;
         try {
             writer = new FileWriter(file);
-        } catch (IOException e) {
-            System.out.println("Invalid file name, we cannot find the file!");
-        }
-        try {
             writer.write(listsJson);
             writer.close();
         } catch (IOException e) {
-            System.out.println("Something wrong ... ");
+            System.out.println("Something wrong with saving data to file.");
         }
     }
 

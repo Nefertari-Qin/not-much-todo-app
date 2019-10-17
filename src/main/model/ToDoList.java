@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.TaskDoesntExistException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,14 +60,15 @@ public class ToDoList {
         return toDoTasks.contains(task);
     }
 
-    // EFFECTS: return the ToDoTask with the given name
-    public ToDoTask getTask(String task) {
+    // EFFECTS: - if there is a ToDoTask of the given name, return the ToDoTask
+    //          - OW throw TaskDoesntExistException
+    public ToDoTask getTask(String task) throws TaskDoesntExistException {
         for (ToDoTask taskWanted : toDoTasks) {
             if (taskWanted.getTaskContent().equals(task)) {
                 return taskWanted;
             }
         }
-        return null;
+        throw new TaskDoesntExistException();
     }
 
     // MODIFIES: this
