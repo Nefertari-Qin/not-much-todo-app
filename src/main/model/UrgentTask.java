@@ -1,5 +1,7 @@
 package model;
 
+import model.exceptions.AlreadyExistException;
+
 import java.util.Date;
 import java.util.Objects;
 

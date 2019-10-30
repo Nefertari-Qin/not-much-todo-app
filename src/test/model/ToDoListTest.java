@@ -1,5 +1,7 @@
 package model;
 
+import model.exceptions.AlreadyExistException;
+import model.exceptions.DoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

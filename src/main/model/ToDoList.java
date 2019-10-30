@@ -1,5 +1,8 @@
 package model;
 
+import model.exceptions.AlreadyExistException;
+import model.exceptions.DoesntExistException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -89,8 +92,12 @@ public class ToDoList {
     // IntelliJ self-generated equals and hasCode:
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ToDoList toDoList = (ToDoList) o;
         return name.equals(toDoList.name);
     }
