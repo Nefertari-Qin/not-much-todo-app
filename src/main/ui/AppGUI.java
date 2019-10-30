@@ -121,7 +121,7 @@ public class AppGUI extends JFrame {
                 if (toDoListName != null) {
                     ToDoList toDoList = new ToDoList(toDoListName);
                     app.removeToDoList(toDoListName);
-                    desktop.remove(new ToDoListUI(toDoList)); // TODO: seems like override equals and hashCode didn't help
+                    desktop.remove(new ToDoListUI(toDoList));
                 }
             } catch (DoesntExistException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "System Error",
