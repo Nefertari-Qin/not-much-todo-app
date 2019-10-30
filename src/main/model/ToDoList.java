@@ -1,90 +1,102 @@
 package model;
 
-import exceptions.TaskDoesntExistException;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ToDoList {
-    private String toDoListName;
-    private List<ToDoTask> toDoTasks;
+    private String name;
+    private List<RegularTask> regularTasks;
+    private List<UrgentTask> urgentTasks;
 
-    // Constructor
-    // EFFECTS: construct a ToDoList with given name
     public ToDoList(String name) {
-        toDoTasks = new ArrayList<>();
-        this.toDoListName = name;
+        this.name = name;
+        regularTasks = new ArrayList<>();
+        urgentTasks = new ArrayList<>();
     }
 
-    // EFFECTS: get the name of this
-    public String getToDoListName() {
-        return toDoListName;
+    // EFFECTS: return list of regularTasks
+    public List<RegularTask> getRegularTasks() {
+        return regularTasks;
     }
 
-    // EFFECTS: get list of ToDoTasks in this
-    public List<ToDoTask> getToDoTasks() {
-        return toDoTasks;
+    // EFFECTS: return the number of regularTasks
+    public int countRegularTasks() {
+        return regularTasks.size();
     }
 
-    public void setToDoTasks(List<ToDoTask> toDoTasks) {
-        this.toDoTasks = toDoTasks;
+    // EFFECTS: return list of urgentTasks
+    public List<UrgentTask> getUrgentTasks() {
+        return urgentTasks;
+    }
+
+    // EFFECTS: return the number of urgentTasks
+    public int countUrgentTasks() {
+        return urgentTasks.size();
+    }
+
+    // EFFECTS: return the total number of tasks
+    public int countTotalTasks() {
+        return (regularTasks.size() + urgentTasks.size());
+    }
+
+    // EFFECTS: return the name of the ToDoList
+    public String getName() {
+        return name;
     }
 
     // MODIFIES: this
-    // EFFECTS: set the name of this
-    public void setToDoListName(String toDoListName) {
-        this.toDoListName = toDoListName;
+    // EFFECTS: set the name of the ToDoList
+    public void setName(String newName) {
+        name = newName;
     }
 
-    // REQUIRES: task is incomplete and not due
-    // MODIFIES: this
-    // EFFECTS: add task to this ToDoList
-    public void addTask(ToDoTask task) {
-        toDoTasks.add(task);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: remove task from ToDoList if task is contained in the list
-    // Otherwise, do nothing.
-    public void removeTask(ToDoTask task) {
-        toDoTasks.remove(task);
-    }
-
-    // EFFECTS: return the number of tasks in the ToDoList
-    public int countTasks() {
-        return toDoTasks.size();
-    }
-
-    // EFFECTS: return true if task is in the ToDoList
-    public boolean containTask(ToDoTask task) {
-        return toDoTasks.contains(task);
-    }
-
-    // EFFECTS: - if there is a ToDoTask of the given name, return the ToDoTask
-    //          - OW throw TaskDoesntExistException
-    public ToDoTask getTask(String task) throws TaskDoesntExistException {
-        for (ToDoTask taskWanted : toDoTasks) {
-            if (taskWanted.getTaskContent().equals(task)) {
-                return taskWanted;
-            }
+    // Add a UrgentTask to ToDoList
+    // MODIFIES: this, urgentTask
+    // EFFECTS: - if a UrgentTask has already been created, throw AlreadyExistException
+    //          - ow add urgentTask into this ToDoList and let it know this ToDoList it's in
+    public void addUrgentTask(UrgentTask urgentTask) throws AlreadyExistException {
+        if (urgentTasks.contains(urgentTask)) {
+            throw new AlreadyExistException(urgentTask.getContent());
         }
-        throw new TaskDoesntExistException();
+        urgentTasks.add(urgentTask);
+        urgentTask.setTheToDoList(this);
     }
 
-    // MODIFIES: this
-    // EFFECTS: deleted all completed tasks in the ToDoList
-    //          and return the number of tasks being deleted
-    public int deleteCompleted() {
-        int completedTasksDeleted = 0;
-        List<ToDoTask> cleanedResultTasks = new ArrayList<>();
-        for (ToDoTask task : toDoTasks) {
-            if (!task.isCompleted()) {
-                cleanedResultTasks.add(task);
-            } else {
-                completedTasksDeleted += 1;
-            }
+    // Remove a UrgentTask from ToDoList
+    // MODIFIES: this, urgentTask
+    // EFFECTS: - if a UrgentTask with name hasn't already been created yet, throw DoesntExistException
+    //          - ow remove the urgentTask with name from ToDoList tell it know it's out of this ToDoList
+    public void removeUrgentTask(UrgentTask urgentTask) throws DoesntExistException {
+        if (!urgentTasks.contains(urgentTask)) {
+            throw new DoesntExistException(urgentTask.getContent());
         }
-        this.toDoTasks = cleanedResultTasks;
-        return completedTasksDeleted;
+        urgentTasks.remove(urgentTask);
+        urgentTask.setTheToDoList(null);
+
+    }
+
+    public void addRegularTask(RegularTask regularTask) {
+        if (!regularTasks.contains(regularTask)) {
+            regularTasks.add(regularTask);
+        }
+    }
+
+    public void removeRegularTask(RegularTask regularTask) {
+        regularTasks.remove(regularTask);
+    }
+
+    // IntelliJ self-generated equals and hasCode:
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ToDoList toDoList = (ToDoList) o;
+        return name.equals(toDoList.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

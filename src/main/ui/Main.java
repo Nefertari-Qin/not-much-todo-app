@@ -1,9 +1,11 @@
 package ui;
 
+import model.App;
+
 public class Main {
+    private static App app;
+
     public static void main(String[] args) {
-        System.out.println("Welcome to WhateverName Application!");
-        App app = new App();
-        app.run();
+        app = new App();
     }
 }
