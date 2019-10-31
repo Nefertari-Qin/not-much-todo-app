@@ -34,6 +34,10 @@ public class UrgentTask {
         }
     }
 
+    public ToDoList getTheToDoList() {
+        return theToDoList;
+    }
+
     public UrgencyLevel getLevel() {
         return level;
     }
