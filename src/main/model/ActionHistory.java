@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+// Code & Idea reference:
+// The Construction of ActionHistory relied on very careful examination of following source:
+// ---> C04-AlarmSystem              Lecture Lab
+// ---> Singleton Design Pattern     https://sourcemaking.com/design_patterns/
+
 public class ActionHistory implements Iterable<Action> {
     // Singleton Design Pattern: the only ActionHistory in the system
     private static ActionHistory theActionHistory;

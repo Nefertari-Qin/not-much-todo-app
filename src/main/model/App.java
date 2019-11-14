@@ -1,11 +1,13 @@
 package model;
 
 import model.exceptions.*;
+import network.MessagePrinter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 
-public class App {
+public class App extends Observable {
     private Map<String, ToDoList> nameListMap;
     private ToDoList listCurrentIn;
 
@@ -14,6 +16,7 @@ public class App {
     // and not currently in ant ToDoList
     public App() {
         nameListMap = new HashMap<String, ToDoList>();
+        addObserver(new MessagePrinter());
     }
 
     // Add a ToDoList to App
@@ -26,6 +29,8 @@ public class App {
             throw new AlreadyExistException(name);
         }
         nameListMap.put(name, toDoList);
+        setChanged();
+        notifyObservers(name);
     }
 
     // Remove a ToDoList from App

@@ -4,16 +4,18 @@ import model.App;
 import model.ToDoList;
 import model.exceptions.AlreadyExistException;
 import model.exceptions.DoesntExistException;
+import network.MessagePrinter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 // Code & Idea reference:
 // The Construction of AppGUI relied on very careful examination of following projects:
-// ---> B01-SmartHome                Optional Practice
+// ---> B01-SmartHome                Optional Practice Problem
 // ---> A06-SimpleDrawingPlayer      Lecture Lab
 // ---> C04-AlarmSystem              Lecture Lab
 
@@ -41,6 +43,12 @@ public class AppGUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         centreOnScreen();
         setVisible(true);
+        MessagePrinter mp = new MessagePrinter();
+        try {
+            mp.printWebInfo();
+        } catch (IOException e) {
+            System.out.println("Something wrong with reading the web.");
+        }
     }
 
     private void addMenu() {
