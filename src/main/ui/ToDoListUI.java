@@ -49,13 +49,13 @@ public class ToDoListUI extends JInternalFrame {
                 && toDoListName.equals(that.toDoListName);
     }
 
+    private void setPosition() {
+        setLocation(0, 0 + HEIGHT * listCount);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(theToDoList, toDoListContent, toDoListName);
-    }
-
-    private void setPosition() {
-        setLocation(0, 0 + HEIGHT * listCount);
     }
 
     private class OpenCloseAction extends AbstractAction {

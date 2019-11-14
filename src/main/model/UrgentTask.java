@@ -78,6 +78,17 @@ public class UrgentTask {
         isDone = done;
     }
 
+    @Override
+    public String toString() {
+        return "Urgent Task {"
+                + "Urgency Level='" + level + '\''
+                + ", Content=" + content
+                + ", Due Time='" + dueTime + '\''
+                + ", Due?='" + isDue + '\''
+                + ", Done?= " + isDone
+                + '}';
+    }
+
     // IntelliJ self-generated equals and hasCode:
     @Override
     public boolean equals(Object o) {

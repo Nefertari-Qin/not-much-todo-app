@@ -76,4 +76,29 @@ public class UrgentTaskTest {
         ut.setDone(true);
         assertTrue(ut.isDone());
     }
+
+    @Test
+    public void testToString() {
+        assertEquals("Urgent Task {"
+                + "Urgency Level='" + ut.getLevel() + '\''
+                + ", Content=" + ut.getContent()
+                + ", Due Time='" + ut.getDueTime() + '\''
+                + ", Due?='" + "false" + '\''
+                + ", Done?= " + "false"
+                + '}', ut.toString());
+    }
+
+    @Test
+    public void testEqualsHashCode() {
+        assertEquals(ut.hashCode(), ut.hashCode());
+        UrgentTask ut1 = new UrgentTask("ut", tdl1);
+        assertTrue(ut.equals(ut));
+        assertFalse(ut.equals(null));
+        assertFalse(ut.equals(0));
+        ut1.setDue(true);
+        assertFalse(ut.equals(ut1));
+        ut1.setDue(false);
+        ut1.setDone(true);
+        assertFalse(ut.equals(ut1));
+    }
 }

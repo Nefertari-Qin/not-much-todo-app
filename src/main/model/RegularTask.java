@@ -50,6 +50,17 @@ public class RegularTask {
     }
 
     @Override
+    public String toString() {
+        return "Regular Task {"
+                + "Urgency Level='" + level + '\''
+                + ", Content=" + content
+                + ", Due Time='" + dueTime + '\''
+                + ", Due?='" + isDue + '\''
+                + ", Done?= " + isDone
+                + '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
