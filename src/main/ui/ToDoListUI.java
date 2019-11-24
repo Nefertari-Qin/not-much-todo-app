@@ -16,14 +16,14 @@ public class ToDoListUI extends JInternalFrame {
     private String toDoListName;
 
     public ToDoListUI(ToDoList toDoList) {
-        super(toDoList.getName(), false, false, false, false);
+        super(toDoList.getName(), false, false, false, true);
         theToDoList = toDoList;
         toDoListName = toDoList.getName();
         toDoListContent = new JTextField(toDoListName + " has ... stuff");  // TODO
         toDoListContent.setEditable(false);
         toDoListContent.setAlignmentX(CENTER_ALIGNMENT);
 
-        JButton enterList = new JButton(new OpenCloseAction());
+        JButton enterList = new JButton(new EnterToDoListAction());
         enterList.setAlignmentX(CENTER_ALIGNMENT);
         Container cp = getContentPane();
         cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
@@ -35,31 +35,16 @@ public class ToDoListUI extends JInternalFrame {
         setVisible(true);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ToDoListUI that = (ToDoListUI) o;
-        return theToDoList.equals(that.theToDoList)
-                && toDoListContent.equals(that.toDoListContent)
-                && toDoListName.equals(that.toDoListName);
+    public String getToDoListName() {
+        return toDoListName;
     }
 
     private void setPosition() {
         setLocation(0, 0 + HEIGHT * listCount);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(theToDoList, toDoListContent, toDoListName);
-    }
-
-    private class OpenCloseAction extends AbstractAction {
-        OpenCloseAction() {
+    private class EnterToDoListAction extends AbstractAction {
+        EnterToDoListAction() {
             super("Enter");
         }
 

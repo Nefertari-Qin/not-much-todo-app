@@ -43,12 +43,7 @@ public class AppGUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         centreOnScreen();
         setVisible(true);
-        MessagePrinter mp = new MessagePrinter();
-        try {
-            mp.printWebInfo();
-        } catch (IOException e) {
-            System.out.println("Something wrong with reading the web.");
-        }
+        setUpMessagePrinter();
     }
 
     private void addMenu() {
@@ -61,16 +56,14 @@ public class AppGUI extends JFrame {
     private JMenu getCreateToDoListMenu() {
         JMenu createToDoListMenu = new JMenu("Create");
         createToDoListMenu.setMnemonic('C');
-        addMenuItem(createToDoListMenu, new CreateNewToDoListAction(),
-                KeyStroke.getKeyStroke("control C"));
+        addMenuItem(createToDoListMenu, new CreateNewToDoListAction(), KeyStroke.getKeyStroke("control C"));
         return createToDoListMenu;
     }
 
     private JMenu getRemoveToDoListMenu() {
         JMenu removeToDoListMenu = new JMenu("Remove");
         removeToDoListMenu.setMnemonic('R');
-        addMenuItem(removeToDoListMenu, new RemoveToDoListAction(),
-                KeyStroke.getKeyStroke("control R"));
+        addMenuItem(removeToDoListMenu, new RemoveToDoListAction(), KeyStroke.getKeyStroke("control R"));
         return removeToDoListMenu;
     }
 
@@ -86,6 +79,15 @@ public class AppGUI extends JFrame {
         int width = Toolkit.getDefaultToolkit().getScreenSize().width;
         int height = Toolkit.getDefaultToolkit().getScreenSize().height;
         setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
+    }
+
+    private void setUpMessagePrinter() {
+        MessagePrinter mp = new MessagePrinter();
+        try {
+            mp.printWebInfo();
+        } catch (IOException e) {
+            System.out.println("Something wrong with reading the web.");
+        }
     }
 
     private class CreateNewToDoListAction extends AbstractAction {
@@ -127,14 +129,26 @@ public class AppGUI extends JFrame {
                     JOptionPane.QUESTION_MESSAGE);
             try {
                 if (toDoListName != null) {
-                    ToDoList toDoList = new ToDoList(toDoListName);
                     app.removeToDoList(toDoListName);
-                    desktop.remove(new ToDoListUI(toDoList));
+                    Component toDoListUIToRemove = getComponentToRemove(toDoListName);
+                    desktop.remove(toDoListUIToRemove); //ToDo: figure out which to remove.
+                    repaint();
                 }
             } catch (DoesntExistException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "System Error",
                         JOptionPane.ERROR_MESSAGE);
             }
+        }
+
+        private Component getComponentToRemove(String toDoListName) {
+            Component[] components = desktop.getComponents();
+            for (Component c : components) {
+                ToDoListUI toDoListUI = (ToDoListUI) c;
+                if (toDoListUI.getToDoListName().equals(toDoListName)) {
+                    return c;
+                }
+            }
+            return null;
         }
     }
 
