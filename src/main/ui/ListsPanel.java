@@ -1,5 +1,7 @@
 package ui;
 
+import model.App;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -23,16 +25,21 @@ import java.time.LocalDateTime;
 public class ListsPanel extends JPanel implements ListSelectionListener {
     public static final String NAME = "Nefertari";
     public static final String LIST_CREATION_PRFX = "ToDoLists";
+    public static final String NEW_CMD = "new";
+    public static final String DEL_CMD = "del";
+
     public static final int LP_WIDTH = AppGui.WIDTH / 4;
     public static final int LP_HEIGHT = AppGui.HEIGHT;
     public static final int MAX_LIST_VISIBLE_ROW = 8;
 
+    private App app;
     private JList toDoLists;
     private DefaultListModel toDoListModel;
     private JButton newBtn;
     private JButton delBtn;
 
     public ListsPanel() {
+        app = new App();
         setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT));
         setBackground(new Color(50, 50, 50, 50));
         toDoListModel = new DefaultListModel();
@@ -60,7 +67,7 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
 
     // Initialize a JList.
     // MODIFIES: this
-    // EFFECTS: instantiate and initialize a JList
+    // EFFECTS: instantiate and initialize a JList to hold ToDoLists
     private void initializeJList() {
         toDoLists = new JList(toDoListModel);
         toDoLists.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -72,14 +79,14 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
     }
 
     // Initialize a JPanel
-    // EFFECTS:
+    // EFFECTS: instantiate and initialize a JPanel for adding and deleting ToDoList
     private JPanel initializeToDoListPanel() {
         JPanel toDoListPanel = new JPanel();
-        JLabel listCreationArea = getToDoListLabel();
+        JLabel listEditingArea = getToDoListEditingLabel();
         initializeNewToDoListButton();
         initializeDelToDoListButton();
 
-        toDoListPanel.add(listCreationArea, BorderLayout.WEST);
+        toDoListPanel.add(listEditingArea, BorderLayout.WEST);
         toDoListPanel.add(Box.createHorizontalStrut(100));
         toDoListPanel.add(newBtn, BorderLayout.EAST);
         toDoListPanel.add(Box.createHorizontalStrut(5));
@@ -108,95 +115,33 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
         return greeting;
     }
 
-    private JLabel getToDoListLabel() {
-        JLabel listCreationArea = new JLabel(LIST_CREATION_PRFX);
-        listCreationArea.setFont(new Font(Font.SERIF, Font.BOLD, 22));
-        listCreationArea.setSize(LP_WIDTH, HEIGHT);
-        return listCreationArea;
+    // Initialize a JLabel
+    // EFFECTS: instantiate and initialize a JLabel for ToDoList Title
+    private JLabel getToDoListEditingLabel() {
+        JLabel listEditingArea = new JLabel(LIST_CREATION_PRFX);
+        listEditingArea.setFont(new Font(Font.SERIF, Font.BOLD, 22));
+        listEditingArea.setSize(LP_WIDTH, HEIGHT);
+        return listEditingArea;
     }
 
+    // Initialize a JButton
+    // EFFECTS: instantiate and initialize a JButton for adding new ToDoList
     private void initializeNewToDoListButton() {
-        final String NEW_CMD = "new";
         newBtn = new JButton(NEW_CMD);
         newBtn.setActionCommand(NEW_CMD);
         newBtn.setMargin(new Insets(0, 0, 0, 0));
         newBtn.setPreferredSize(new Dimension(30, 20));
-        newBtn.addActionListener(e -> {
-            if (e.getActionCommand() == NEW_CMD) {
-                String s = (String) JOptionPane.showInputDialog(null,
-                        "Enter the name of new ToDo List:", "New ToDo List", JOptionPane.PLAIN_MESSAGE,
-                        null, null, "new todo list");
-                if ((s != null) && (s.length() > 0)) {
-                    createToDoList(s);
-                }
-            }
-        });
+        newBtn.addActionListener(new NewToDoListListener());
     }
 
+    // Initialize a JButton
+    // EFFECTS: instantiate and initialize a JButton for deleting selected ToDoList
     private void initializeDelToDoListButton() {
-        final String DEL_CMD = "del";
         delBtn = new JButton(DEL_CMD);
         delBtn.setActionCommand(DEL_CMD);
         delBtn.setMargin(new Insets(0, 0, 0, 0));
         delBtn.setPreferredSize(new Dimension(30, 20));
-        delBtn.addActionListener(e -> {
-            if (e.getActionCommand() == DEL_CMD) {
-                int index = toDoLists.getSelectedIndex();
-                removeJToDoListAt(index);
-                int newIndex = updateIndexOfSelectedAfterRemove(index);
-
-                toDoLists.setSelectedIndex(newIndex);
-                toDoLists.ensureIndexIsVisible(newIndex);
-            }
-        });
-    }
-
-    private void createToDoList(String name) {
-        if (name.equals("") || hasListAlreadyCreated(name)) {
-            JOptionPane.showMessageDialog(null,
-                    "ToDo List: " + name + " has already been created",
-                    "System Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        updateSelectionIndexAfterCreation(name);
-    }
-
-    private void updateSelectionIndexAfterCreation(String name) {
-        int index = toDoLists.getSelectedIndex();
-        if (index == -1) {
-            index = 0;
-        } else {
-            index++;
-        }
-        toDoListModel.insertElementAt(name, index);
-        //Select the new item and make it visible.
-        toDoLists.setSelectedIndex(index);
-        toDoLists.ensureIndexIsVisible(index);
-    }
-
-    private boolean hasListAlreadyCreated(String name) {
-        return toDoListModel.contains(name);
-    }
-
-    private void removeJToDoListAt(int index) {
-        if (index < 0) {
-            JOptionPane.showMessageDialog(null, "No ToDo List has been created yet.",
-                    "System Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            toDoListModel.remove(index);
-        }
-    }
-
-    private int updateIndexOfSelectedAfterRemove(int index) {
-        int size = toDoListModel.getSize();
-        if (size == 0) {
-            delBtn.setEnabled(false);
-        } else if (index == toDoListModel.getSize()) {
-            //removed item in last position
-            index--;
-        }
-        return index;
+        delBtn.addActionListener(new DelToDoListListener());
     }
 
     /**
@@ -214,6 +159,93 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
                 //Selection, enable the delete button.
                 delBtn.setEnabled(true);
             }
+
+        }
+    }
+
+    class NewToDoListListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         *
+         * @param e the event that indicates creation of a new ToDoList
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand() == NEW_CMD) {
+                String s = (String) JOptionPane.showInputDialog(null,
+                        "Enter the name of new ToDo List:", "New ToDo List", JOptionPane.PLAIN_MESSAGE,
+                        null, null, "new todo list");
+                if ((s != null) && (s.length() > 0)) {
+                    createToDoList(s);
+                }
+            }
+        }
+
+        private void createToDoList(String name) {
+            if (name.equals("") || hasListAlreadyCreated(name)) {
+                JOptionPane.showMessageDialog(null,
+                        "ToDo List: " + name + " has already been created",
+                        "System Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            updateSelectionIndexAfterCreation(name);
+        }
+
+        private boolean hasListAlreadyCreated(String name) {
+            return toDoListModel.contains(name);
+        }
+
+        private void updateSelectionIndexAfterCreation(String name) {
+            int index = toDoLists.getSelectedIndex();
+            if (index == -1) {
+                index = 0;
+            } else {
+                index++;
+            }
+            toDoListModel.insertElementAt(name, index);
+            //Select the new item and make it visible.
+            toDoLists.setSelectedIndex(index);
+            toDoLists.ensureIndexIsVisible(index);
+        }
+    }
+
+    class DelToDoListListener implements ActionListener {
+        /**
+         * Invoked when an action occurs.
+         *
+         * @param e the event that indicates deleting selected ToDoList
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand() == DEL_CMD) {
+                int index = toDoLists.getSelectedIndex();
+                removeJToDoListAt(index);
+                int newIndex = updateIndexOfSelectedAfterRemove(index);
+
+                toDoLists.setSelectedIndex(newIndex);
+                toDoLists.ensureIndexIsVisible(newIndex);
+            }
+        }
+
+        private void removeJToDoListAt(int index) {
+            if (index < 0) {
+                JOptionPane.showMessageDialog(null, "No ToDo List has been created yet.",
+                        "System Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                toDoListModel.remove(index);
+            }
+        }
+
+        private int updateIndexOfSelectedAfterRemove(int index) {
+            int size = toDoListModel.getSize();
+            if (size == 0) {
+                delBtn.setEnabled(false);
+            } else if (index == toDoListModel.getSize()) {
+                //removed item in last position
+                index--;
+            }
+            return index;
         }
     }
 
@@ -233,8 +265,9 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
         }
     }
 
-    // Following code here just for development use, I need to
-    // somehow visualize individual component. TODO: Delete when done.
+
+    // Following code here just for development use, I need to somehow visualize
+    // individual component. TODO: Delete all of them when finished.
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("ToDoListGUI");

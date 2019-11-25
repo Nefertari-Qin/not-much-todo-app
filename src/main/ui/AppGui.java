@@ -12,7 +12,6 @@ public class AppGui {
 
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 880;
-    private App app;
 
     public static void main(String[] args) {
         new AppGui();
@@ -24,7 +23,6 @@ public class AppGui {
         JFrame appGui = new JFrame("Not Much ToDo App");
         appGui.setSize(WIDTH, HEIGHT);
         appGui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        app = new App();
 
         JPanel tasksPanel = new TasksPanel();
         JPanel listsPanel = new ListsPanel();
