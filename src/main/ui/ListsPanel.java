@@ -4,7 +4,6 @@ import model.App;
 import model.ToDoList;
 import model.exceptions.AlreadyExistException;
 import model.exceptions.DoesntExistException;
-import model.exceptions.InsideListException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -64,7 +63,7 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
     private JLabel initializeGreeting() {
         String greeting = chooseGreetingString();
         JLabel greetingArea = new JLabel(greeting + NAME + "!", JLabel.LEFT);  // TODO: I don't really think
-        greetingArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));        //   the LEFT does anything ...
+        greetingArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 23));        //   the LEFT does anything ...
         greetingArea.setSize(WIDTH, HEIGHT);
         return greetingArea;
     }
@@ -173,7 +172,7 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
                 }
             }
         }
-        repaint();   // TODO: my repaint() doesn't do anything ...
+        repaint();   // TODO: my repaint() doesn't do anything ... :(
     }
 
     class NewToDoListListener implements ActionListener {
@@ -197,7 +196,7 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
                     createToDoList(name);
                 }
             }
-            repaint();    // TODO: my repaint() doesn't do anything ...
+            repaint();    // TODO: my repaint() doesn't do anything ... :(
         }
 
         private void createToDoList(String name) {
@@ -252,7 +251,7 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
                 toDoLists.setSelectedIndex(newIndex);
                 toDoLists.ensureIndexIsVisible(newIndex);
             }
-            repaint();   // TODO: my repaint() doesn't do anything ...
+            repaint();   // TODO: my repaint() doesn't do anything ... :(
         }
 
         private void removeJToDoListAt(String name, int index) {
@@ -305,8 +304,8 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
     }
 
 
-    // Following code here just for development use, I need to somehow visualize
-    // individual component. TODO: Delete all of them when finished.
+    // TODO: Delete all of the following code when finished. They are here just for
+    //  development use, I need to somehow visualize individual component.
     private static void createAndShowGUI() {
         //Create and set up the window.
         JFrame frame = new JFrame("ToDoListGUI");

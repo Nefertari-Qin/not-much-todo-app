@@ -17,8 +17,6 @@ public class AppGui {
         new AppGui();
     }
 
-    //MODIFIES: this
-    //EFFECTS: creates SmartHomeUI, loads SmartHome appliances, displays sidebar and tabs
     private AppGui() {
         JFrame appGui = new JFrame("Not Much ToDo App");
         appGui.setSize(WIDTH, HEIGHT);
