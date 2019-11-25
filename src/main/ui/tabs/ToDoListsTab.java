@@ -1,9 +1,9 @@
 package ui.tabs;
 
-import ui.AppMainGui;
+import ui.AppGui;
 
 public class ToDoListsTab extends Tab {
-    public ToDoListsTab(AppMainGui appController) {
+    public ToDoListsTab(AppGui appController) {
         super(appController);
     }
 }

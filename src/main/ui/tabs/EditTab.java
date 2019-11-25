@@ -1,8 +1,9 @@
 package ui.tabs;
 
-import ui.AppMainGui;
+import ui.AppGui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,8 +11,9 @@ public class EditTab extends Tab implements ActionListener {
     public static final String TODO_LIST_NAME = "New ToDo List Name";
     public static final String TODO_TASK_NAME = "New ToDo Task Name";
 
-    public EditTab(AppMainGui appController) {
+    public EditTab(AppGui appController) {
         super(appController);
+        tab.setLayout(new GridLayout(3, 1));
     }
 
     /**

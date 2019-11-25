@@ -1,18 +1,24 @@
 package ui.tabs;
 
-import model.App;
-import ui.AppMainGui;
+import ui.AppGui;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class Tab extends JPanel {
+public abstract class Tab {
 
-    private AppMainGui appController;
+    private AppGui appController;
+
+    public JPanel getTab() {
+        return tab;
+    }
+
+    protected JPanel tab;
 
     //REQUIRES: AppMainGui controller that holds this tab
-    public Tab(AppMainGui appController) {
+    public Tab(AppGui appController) {
         this.appController = appController;
+        tab = new JPanel();
     }
 
     //EFFECTS: creates and returns row with button included
@@ -25,7 +31,7 @@ public abstract class Tab extends JPanel {
     }
 
     //EFFECTS: returns the AppMainGui controller for this tab
-    public AppMainGui getAppController() {
+    public AppGui getAppController() {
         return appController;
     }
 
