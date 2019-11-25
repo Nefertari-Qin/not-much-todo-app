@@ -68,17 +68,16 @@ public class App extends Observable {
 
     // Enter the ToDoList with name from App*
     // MODIFIES: this
-    // EFFECTS:  - if listCurrentIn != null, throw InsideListException
+    // EFFECTS:  - if listCurrentIn != null, Do nothing
     //           - if a ToDoList with name hasn't already been created yet, throw DoesntExistException
     //           - ow set it to be the listCurrentIn
-    public void enterToDoList(String name) throws DoesntExistException, InsideListException {
-        if (listCurrentIn != null) {
-            throw new InsideListException();
-        }
+    public void enterToDoList(String name) throws DoesntExistException {
         if (!nameListMap.containsKey(name)) {
             throw new DoesntExistException(name);
+        } else if (listCurrentIn == null) {
+            listCurrentIn = nameListMap.get(name);
         }
-        listCurrentIn = nameListMap.get(name);
+
     }
 
     // Exit the listCurrentIn

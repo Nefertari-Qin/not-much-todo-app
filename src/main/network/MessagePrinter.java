@@ -49,5 +49,7 @@ public class MessagePrinter implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         System.out.println(arg + " is added to App.");
+        // TODO: rather than print to console, I will try something else
+        //  Current Idea is a pie chart, depending on whether my ability can chase my tastes
     }
 }

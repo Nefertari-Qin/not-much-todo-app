@@ -1,6 +1,10 @@
 package ui;
 
 import model.App;
+import model.ToDoList;
+import model.exceptions.AlreadyExistException;
+import model.exceptions.DoesntExistException;
+import model.exceptions.InsideListException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -153,14 +157,23 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting() == false) {
             if (toDoLists.getSelectedIndex() == -1) {
-                //No selection, disable delete button.
                 delBtn.setEnabled(false);
+                app.exitToDoList();
             } else {
-                //Selection, enable the delete button.
                 delBtn.setEnabled(true);
+                try {
+                    app.enterToDoList((String) toDoLists.getSelectedValue());
+                    // showTasksPanel(); // TODO: specify and implement this method later
+                } catch (DoesntExistException ex) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            ex.getMessage(),
+                            "System Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
-
         }
+        repaint();   // TODO: my repaint() doesn't do anything ...
     }
 
     class NewToDoListListener implements ActionListener {
@@ -172,28 +185,40 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand() == NEW_CMD) {
-                String s = (String) JOptionPane.showInputDialog(null,
-                        "Enter the name of new ToDo List:", "New ToDo List", JOptionPane.PLAIN_MESSAGE,
-                        null, null, "new todo list");
-                if ((s != null) && (s.length() > 0)) {
-                    createToDoList(s);
+                String name = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Enter the name of new ToDo List:",
+                        "New ToDo List",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        null,
+                        "new todo list");
+                if ((name != null) && (name.length() > 0)) {
+                    createToDoList(name);
                 }
             }
+            repaint();    // TODO: my repaint() doesn't do anything ...
         }
 
         private void createToDoList(String name) {
-            if (name.equals("") || hasListAlreadyCreated(name)) {
-                JOptionPane.showMessageDialog(null,
-                        "ToDo List: " + name + " has already been created",
+            if (name.equals("")) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "ToDo List name cannot be empty!",
                         "System Error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            updateSelectionIndexAfterCreation(name);
-        }
-
-        private boolean hasListAlreadyCreated(String name) {
-            return toDoListModel.contains(name);
+            try {
+                app.addToDoList(new ToDoList(name));
+                updateSelectionIndexAfterCreation(name);
+            } catch (AlreadyExistException e) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        e.getMessage(),
+                        "System Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
 
         private void updateSelectionIndexAfterCreation(String name) {
@@ -220,20 +245,34 @@ public class ListsPanel extends JPanel implements ListSelectionListener {
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand() == DEL_CMD) {
                 int index = toDoLists.getSelectedIndex();
-                removeJToDoListAt(index);
+                String name = (String) toDoLists.getSelectedValue();
+                removeJToDoListAt(name, index);
                 int newIndex = updateIndexOfSelectedAfterRemove(index);
 
                 toDoLists.setSelectedIndex(newIndex);
                 toDoLists.ensureIndexIsVisible(newIndex);
             }
+            repaint();   // TODO: my repaint() doesn't do anything ...
         }
 
-        private void removeJToDoListAt(int index) {
+        private void removeJToDoListAt(String name, int index) {
             if (index < 0) {
-                JOptionPane.showMessageDialog(null, "No ToDo List has been created yet.",
-                        "System Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        null,
+                        "No ToDo List has been created yet.",
+                        "System Error",
+                        JOptionPane.ERROR_MESSAGE);
             } else {
-                toDoListModel.remove(index);
+                try {
+                    app.removeToDoList(name);
+                    toDoListModel.remove(index);
+                } catch (DoesntExistException e) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            e.getMessage(),
+                            "System Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
 

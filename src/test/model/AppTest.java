@@ -191,8 +191,6 @@ public class AppTest {
             fail("Expect ListDoesntExistException.");
         } catch (DoesntExistException e) {
             System.out.println("testEnterToDoListThrowException passed!");
-        } catch (InsideListException e) {
-            fail("Don't expect InsideListException");
         }
         assertNull(testApp.getListCurrentIn());
     }
@@ -205,13 +203,10 @@ public class AppTest {
             testApp.enterToDoList("tl2");
 
             testApp.enterToDoList("tl1");
-            fail("Expect InsideListException.");
         } catch (DoesntExistException e) {
             fail("Don't expect ListDoesntExistException");
         } catch (AlreadyExistException e) {
             fail("Don't expect ListAlreadyExistException");
-        } catch (InsideListException e) {
-            System.out.println("testEnterToDoListThrowException passed!");
         }
         assertEquals(tl2, testApp.getListCurrentIn());
     }
@@ -229,8 +224,6 @@ public class AppTest {
             fail("Don't expect ListAlreadyExistException.");
         } catch (DoesntExistException e) {
             fail("Don't expect ListDoesntExistException.");
-        } catch (InsideListException e) {
-            fail("Don't expect InsideListException.");
         }
     }
 
@@ -254,8 +247,6 @@ public class AppTest {
             fail("Don't expect ListAlreadyExistException.");
         } catch (DoesntExistException e) {
             fail("Don't expect ListDoesntExistException.");
-        } catch (InsideListException e) {
-            fail("Don't expect InsideListException.");
         }
     }
 
@@ -291,8 +282,6 @@ public class AppTest {
             fail("Don't expect OutsideListException.");
         } catch (DoesntExistException e) {
             fail("Don't expect ListDoesntExistException.");
-        } catch (InsideListException e) {
-            fail("Don't expect InsideListException.");
         } catch (SameNameException e) {
             System.out.println("testEditCurrentToDoListNameThrowNameException passed!");
         }
@@ -313,8 +302,6 @@ public class AppTest {
             fail("Don't expect OutsideListException.");
         } catch (DoesntExistException e) {
             fail("Don't expect ListDoesntExistException.");
-        } catch (InsideListException e) {
-            fail("Don't expect InsideListException.");
         } catch (SameNameException e) {
             System.out.println("testEditCurrentToDoListNameThrowNameException passed!");
         }
