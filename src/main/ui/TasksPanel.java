@@ -3,10 +3,10 @@ package ui;
 import model.App;
 import model.ToDoList;
 import model.ToDoTask;
+import model.exceptions.AlreadyExistException;
+import model.exceptions.DoesntExistException;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -38,30 +38,26 @@ public class TasksPanel extends JPanel {
     private ListSelectionListener ll;
 
     public TasksPanel(App app) {
-        this();
         this.app = app;
         ll = new TaskTableRendererListener();
-    }
-
-    public TasksPanel() {
         initializeTasksPanelSeting();
 
         JLabel titleLabel = initializeTitle();
         initializeToDoTaskJTable();
         JScrollPane scrollPane = initializeTaskTableScrollPane();
 
-        JLabel editorLabel = new JLabel("ToDo Task Editor: ", SwingConstants.LEFT);
+        JLabel editorLabel = new JLabel("ToDo Task Editor: ");
         editorLabel.setFont(new Font(Font.SERIF, Font.BOLD, 28));
         editorLabel.setPreferredSize(new Dimension(TP_WIDTH, ROW_HEIGHT));
 
         JPanel editorPanel = initializeEditorPanel();
         JPanel creationPanel = initializeCreationPanel();
 
-        add(editorLabel, BorderLayout.NORTH);
+        add(editorLabel);
         add(editorPanel);
         add(creationPanel);
         add(titleLabel);
-        add(scrollPane, BorderLayout.SOUTH);
+        add(scrollPane);
     }
 
     private JPanel initializeCreationPanel() {
@@ -169,14 +165,13 @@ public class TasksPanel extends JPanel {
     }
 
     private JLabel initializeTitle() {
-        JLabel titleLabel = new JLabel("All ToDo Tasks in: ");
+        JLabel titleLabel = new JLabel("All ToDo Tasks: ");
         titleLabel.setFont(new Font(Font.SERIF, Font.BOLD, 28));
         titleLabel.setPreferredSize(new Dimension(TP_WIDTH, TP_HEIGHT / 25));
         return titleLabel;
     }
 
     class TaskTableRendererListener implements ListSelectionListener, Observer {
-        private ToDoList selectedList = app.getListCurrentIn();
 
         /**
          * Called whenever the value of the selection changes.
@@ -213,9 +208,15 @@ public class TasksPanel extends JPanel {
         }
 
         private void updateTaskTable() {
-            if (selectedList != null) {
+            System.out.println("debug1");
+            while (toDoTaskTableModel.getRowCount() > 0) {
+                System.out.println("debug in1");
                 toDoTaskTableModel.setRowCount(0);
-                for (ToDoTask t : selectedList) {
+                System.out.println("debug in2");
+            }
+            System.out.println("debug2");
+            if (app.getListCurrentIn() != null) {
+                for (ToDoTask t : app.getListCurrentIn()) {
                     addTaskToTable(t);
                 }
             }
@@ -253,9 +254,13 @@ public class TasksPanel extends JPanel {
                     return;
                 } else {
                     ToDoTask task = new ToDoTask(taskName.getText(), taskDscp.getText(),
-                            taskType.getText(),  taskDue.getText());
+                            taskType.getText(), taskDue.getText());
                     crnt.addObserver((Observer) ll);
                     crnt.addToDoTask(task);
+                    taskName.setText("");
+                    taskDscp.setText("");
+                    taskType.setText("");
+                    taskDue.setText("");
                 }
             }
         }
@@ -286,16 +291,21 @@ public class TasksPanel extends JPanel {
     // TODO: Delete all of the following code when finished. They are here just for
     //  development use, I need to somehow visualize individual component.
     private static void createAndShowGUI() {
-        //Create and set up the window.
         JFrame frame = new JFrame("ToDoTasksGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        JComponent newContentPane = new TasksPanel(new App());
-        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setResizable(false);
+        frame.setPreferredSize(new Dimension(TP_WIDTH + 100, TP_HEIGHT - 70));
+        App a = new App();
+        ToDoList t = new ToDoList("name");
+        try {
+            a.addToDoList(t);
+            a.enterToDoList("name");
+        } catch (Exception e) {
+            System.out.println("Impossible Situation");
+        }
+        JComponent newContentPane = new TasksPanel(a);
+        newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
-
-        //Display the window.
         frame.pack();
         frame.setVisible(true);
     }

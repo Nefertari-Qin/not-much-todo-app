@@ -31,7 +31,7 @@ public class ListsPanel extends JPanel {
     public static final String NEW_CMD = "new";
     public static final String DEL_CMD = "del";
 
-    public static final int LP_WIDTH = AppGui.WIDTH / 4;
+    public static final int LP_WIDTH = AppGui.WIDTH / 4 - 10;
     public static final int LP_HEIGHT = AppGui.HEIGHT;
     public static final int MAX_LIST_VISIBLE_ROW = 8;
 
@@ -50,14 +50,17 @@ public class ListsPanel extends JPanel {
         toDoListModel = new DefaultListModel();
 
         JLabel greetingLabel = initializeGreeting();
+        JLabel nameArea = new JLabel(NAME + "!");
+        nameArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
         initializeJList();
         JPanel toDoListPanel = initializeToDoListPanel();
         JScrollPane listScrollPane = new JScrollPane(jtoDoLists);
-        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH - 5, LP_HEIGHT / 4));
+        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 4));
 
         add(greetingLabel, BorderLayout.NORTH);
-        add(toDoListPanel, BorderLayout.NORTH);
-        add(listScrollPane, BorderLayout.NORTH);
+        add(nameArea);
+        add(toDoListPanel);
+        add(listScrollPane);
     }
 
     public ListsPanel(App app) {
@@ -71,23 +74,29 @@ public class ListsPanel extends JPanel {
         toDoListModel = new DefaultListModel();
 
         JLabel greetingLabel = initializeGreeting();
+        JLabel nameArea = new JLabel(NAME + "!");
+        nameArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
         initializeJList();
         JPanel toDoListPanel = initializeToDoListPanel();
         JScrollPane listScrollPane = new JScrollPane(jtoDoLists);
-        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH - 5, LP_HEIGHT / 4));
+        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 4));
 
         add(greetingLabel, BorderLayout.NORTH);
-        add(toDoListPanel, BorderLayout.NORTH);
-        add(listScrollPane, BorderLayout.NORTH);
+        add(nameArea);
+        add(toDoListPanel);
+        add(listScrollPane);
     }
 
     // Initialize a JLabel.
     // EFFECTS: return a JLabel with correct greeting message.
     private JLabel initializeGreeting() {
         String greeting = chooseGreetingString();
-        JLabel greetingArea = new JLabel(greeting + NAME + "!", JLabel.CENTER);
-        greetingArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
-        greetingArea.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 25));
+        JLabel greetingArea = new JLabel(greeting);
+        //JLabel nameArea = new JLabel(NAME + "!");
+        greetingArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
+        //greetingArea.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 25));
+        //nameArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+        //nameArea.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 25));
         return greetingArea;
     }
 
@@ -117,7 +126,7 @@ public class ListsPanel extends JPanel {
         initializeDelToDoListButton();
 
         toDoListPanel.add(listEditingArea, BorderLayout.WEST);
-        toDoListPanel.add(Box.createHorizontalStrut(85));
+        toDoListPanel.add(Box.createHorizontalStrut(40));
         toDoListPanel.add(newBtn, BorderLayout.EAST);
         toDoListPanel.add(Box.createHorizontalStrut(5));
         toDoListPanel.add(delBtn);
@@ -175,7 +184,6 @@ public class ListsPanel extends JPanel {
     }
 
 
-
     class ToDoListListSelectionListener implements ListSelectionListener {
 
         /**
@@ -196,10 +204,8 @@ public class ListsPanel extends JPanel {
                         // showTasksPanel(); // TODO: specify and implement this method later
                     } catch (DoesntExistException ex) {
                         JOptionPane.showMessageDialog(
-                                null,
-                                ex.getMessage(),
-                                "System Error",
-                                JOptionPane.ERROR_MESSAGE);
+                                null, ex.getMessage(),
+                                "System Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -255,7 +261,6 @@ public class ListsPanel extends JPanel {
                 index++;
             }
             toDoListModel.insertElementAt(name, index);
-            //Select the new item and make it visible.
             jtoDoLists.setSelectedIndex(index);
             jtoDoLists.ensureIndexIsVisible(index);
         }
@@ -334,13 +339,11 @@ public class ListsPanel extends JPanel {
         //Create and set up the window.
         JFrame frame = new JFrame("ToDoListsGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
+        frame.setPreferredSize(new Dimension(LP_WIDTH + 100, LP_HEIGHT - 300));
+        frame.setResizable(false);
         JComponent newContentPane = new ListsPanel(new App());
         newContentPane.setOpaque(true); //content panes must be opaque
         frame.setContentPane(newContentPane);
-
-        //Display the window.
         frame.pack();
         frame.setVisible(true);
     }

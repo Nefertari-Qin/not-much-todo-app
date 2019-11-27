@@ -1,8 +1,5 @@
 package model;
 
-import model.exceptions.AlreadyExistException;
-import model.exceptions.DoesntExistException;
-
 import java.util.*;
 
 public class ToDoList extends Observable implements Iterable<ToDoTask> {
@@ -12,7 +9,6 @@ public class ToDoList extends Observable implements Iterable<ToDoTask> {
     public ToDoList(String name) {
         this.name = name;
         tasks = new ArrayList<>();
-        //tasks.add(new ToDoTask("1", "2", "3", "4"));
     }
 
     public String getName() {
@@ -24,10 +20,9 @@ public class ToDoList extends Observable implements Iterable<ToDoTask> {
     }
 
     public void addToDoTask(ToDoTask task) {
+        tasks.add(task);
         setChanged();
         notifyObservers();
-        tasks.add(task);
-        //System.out.println("debug");
     }
 
     @Override
@@ -39,12 +34,12 @@ public class ToDoList extends Observable implements Iterable<ToDoTask> {
             return false;
         }
         ToDoList list = (ToDoList) o;
-        return Objects.equals(name, list.name) && Objects.equals(tasks, list.tasks);
+        return Objects.equals(name, list.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, tasks);
+        return Objects.hash(name);
     }
 
     /**
