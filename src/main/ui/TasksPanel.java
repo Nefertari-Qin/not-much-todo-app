@@ -3,8 +3,6 @@ package ui;
 import model.App;
 import model.ToDoList;
 import model.ToDoTask;
-import model.exceptions.AlreadyExistException;
-import model.exceptions.DoesntExistException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,6 +15,20 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
+// Code & Idea reference:
+// The Construction of ToDoListsGUI relied on very careful examination of following source:
+// ---> B01-SmartHome            Optional Practice Problem
+// ---> A06-SimpleDrawingPlayer  Lecture Lab
+// ---> C04-AlarmSystem          Lecture Lab
+// ---> TableDemo                https://docs.oracle.com/javase/tutorial/uiswing/components/index.html
+// ---> JTable Java Tutorials    https://docs.oracle.com/javase/tutorial/uiswing/components/index.html
+// ---> JTable Java DOCS         https://docs.oracle.com/javase/8/docs/api/javax/swing/JTable.html
+
+// Side Note: There is no way for me to create such a fancy (at least I think it is) GUI from scratch.
+//            Even though it was built from those template-like demo projects listed above,
+//            I did spent a ton of time searching and looking up related Java API.
+
+// Represent a GUI for TasksPanel
 public class TasksPanel extends JPanel {
     public static final int TP_WIDTH = (AppGui.WIDTH / 4) * 3 - 25;
     public static final int TP_HEIGHT = AppGui.HEIGHT;
@@ -34,75 +46,44 @@ public class TasksPanel extends JPanel {
     private JTextField taskDue;
     private JButton genBtn;
     private JButton rmvBtn;
-    private JTable table;
     private ListSelectionListener ll;
 
     public TasksPanel(App app) {
         this.app = app;
         ll = new TaskTableRendererListener();
-        initializeTasksPanelSeting();
+        initializeTasksPanelSetting();
 
-        JLabel titleLabel = initializeTitle();
-        initializeToDoTaskJTable();
-        JScrollPane scrollPane = initializeTaskTableScrollPane();
-
-        JLabel editorLabel = new JLabel("ToDo Task Editor: ");
-        editorLabel.setFont(new Font(Font.SERIF, Font.BOLD, 28));
-        editorLabel.setPreferredSize(new Dimension(TP_WIDTH, ROW_HEIGHT));
-
+        JLabel editorLabel = initializeEditorTitleLabel();
         JPanel editorPanel = initializeEditorPanel();
         JPanel creationPanel = initializeCreationPanel();
+        JLabel tableLabel = initializeAllTaskTableTitle();
+        JTable taskTable = initializeToDoTaskJTable();
+        JScrollPane tableScrollablePane = initializeTaskTableScrollPane(taskTable);
 
         add(editorLabel);
         add(editorPanel);
         add(creationPanel);
-        add(titleLabel);
-        add(scrollPane);
+        add(tableLabel);
+        add(tableScrollablePane);
     }
 
-    private JPanel initializeCreationPanel() {
-        JPanel cp = new JPanel();
-        GroupLayout gl = new GroupLayout(cp);
-        cp.setLayout(gl);
-        cp.setOpaque(false);
-        initializeGenerateTaskButton();
-        JLabel due = getEditorAreaLabel("Task Due Date: ");
-        GroupLayout.SequentialGroup row = gl.createSequentialGroup();
-        GroupLayout.SequentialGroup column = gl.createSequentialGroup();
-        row.addGap(15);
-        row.addGroup(gl.createParallelGroup().addComponent(due));
-        row.addGroup(gl.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(taskDue).addComponent(genBtn));
-        column.addGroup(gl.createParallelGroup().addComponent(due).addComponent(taskDue));
-        column.addGap(346);
-        column.addGroup(gl.createParallelGroup().addComponent(genBtn));
-        gl.setHorizontalGroup(column);
-        gl.setVerticalGroup(row);
-        return cp;
-    }
-
-    private void initializeGenerateTaskButton() {
-        genBtn = new JButton("Generate Task");
-        genBtn.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
-        genBtn.setActionCommand(GEN_CMD);
-        genBtn.setMargin(new Insets(0, 32, 0, 32));
-        genBtn.addActionListener(new NewToDoTaskListener());
-    }
-
+    // Getter
     public ListSelectionListener getListListener() {
         return ll;
     }
 
-    private JScrollPane initializeTaskTableScrollPane() {
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(TP_WIDTH, SCL_PNL_HEIGHT));
-        return scrollPane;
-    }
-
-    private void initializeTasksPanelSeting() {
+    private void initializeTasksPanelSetting() {
         setPreferredSize(new Dimension(TP_WIDTH, TP_HEIGHT));
         setBackground(new Color(50, 50, 50, 50));
         setOpaque(true);
+    }
+
+    private JLabel initializeEditorTitleLabel() {
+        JLabel editorLabel = new JLabel("ToDo Task Editor: ");
+        editorLabel.setFont(new Font(Font.SERIF, Font.BOLD, 28));
+        editorLabel.setPreferredSize(new Dimension(TP_WIDTH, ROW_HEIGHT));
+
+        return editorLabel;
     }
 
     private JPanel initializeEditorPanel() {
@@ -110,117 +91,127 @@ public class TasksPanel extends JPanel {
         GroupLayout gl = new GroupLayout(editorPanel);
         editorPanel.setLayout(gl);
         editorPanel.setOpaque(false);
+
         initializeTextFields();
-        GroupLayout.SequentialGroup row = gl.createSequentialGroup();
-        GroupLayout.SequentialGroup column = gl.createSequentialGroup();
-        layoutEditor(gl, row, column);
-        gl.setHorizontalGroup(column);
-        gl.setVerticalGroup(row);
+        layoutEditorPanel(gl);
+
         return editorPanel;
     }
 
-    private void layoutEditor(GroupLayout gl, GroupLayout.SequentialGroup row, GroupLayout.SequentialGroup column) {
-        JLabel name = getEditorAreaLabel("Task Name: ");
-        JLabel dscp = getEditorAreaLabel("Task Content: ");
-        JLabel type = getEditorAreaLabel("Task Type: ");
-        row.addGroup(gl.createParallelGroup().addComponent(name).addComponent(dscp).addComponent(type));
-        row.addGroup(gl.createParallelGroup().addComponent(taskName).addComponent(taskDscp).addComponent(taskType));
-        column.addGroup(gl.createParallelGroup().addComponent(name).addComponent(taskName));
-        column.addGap(70);
-        column.addGroup(gl.createParallelGroup().addComponent(dscp).addComponent(taskDscp));
-        column.addGap(70);
-        column.addGroup(gl.createParallelGroup().addComponent(type).addComponent(taskType));
+    private JPanel initializeCreationPanel() {
+        JPanel creationPanel = new JPanel();
+        GroupLayout gl = new GroupLayout(creationPanel);
+        creationPanel.setLayout(gl);
+        creationPanel.setOpaque(false);
+
+        initializeGenerateTaskButton();
+        layoutCreationPanel(gl);
+
+        return creationPanel;
+    }
+
+    private JLabel initializeAllTaskTableTitle() {
+        JLabel titleLabel = new JLabel("All ToDo Tasks: ");
+        titleLabel.setFont(new Font(Font.SERIF, Font.BOLD, 30));
+        titleLabel.setPreferredSize(new Dimension(TP_WIDTH, TP_HEIGHT / 10));
+
+        return titleLabel;
+    }
+
+    private JTable initializeToDoTaskJTable() {
+        toDoTaskTableModel = new MyTableModel();
+        JTable table = new JTable(toDoTaskTableModel);
+        table.setPreferredScrollableViewportSize(new Dimension(TP_WIDTH - 10, SCL_PNL_HEIGHT - 10));
+        table.setFillsViewportHeight(false);
+        table.setRowHeight(30);
+        table.setOpaque(false);
+
+        return table;
+    }
+
+    private JScrollPane initializeTaskTableScrollPane(JTable table) {
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(TP_WIDTH, SCL_PNL_HEIGHT));
+
+        return scrollPane;
     }
 
     private void initializeTextFields() {
         JTextField fakeTF = new JTextField("", 1);
         Font bigFont = fakeTF.getFont().deriveFont(Font.PLAIN, 20f);
+
         taskName = new JTextField();
         taskName.setColumns(TEXT_BOX_WIDTH);
         taskName.setFont(bigFont);
+
         taskDscp = new JTextField();
         taskDscp.setColumns(TEXT_BOX_WIDTH);
         taskDscp.setFont(bigFont);
+
         taskType = new JTextField();
         taskType.setColumns(TEXT_BOX_WIDTH);
         taskType.setFont(bigFont);
+
         taskDue = new JTextField();
         taskDue.setColumns(TEXT_BOX_WIDTH);
         taskDue.setFont(bigFont);
     }
 
-    private JLabel getEditorAreaLabel(String s) {
+    private void initializeGenerateTaskButton() {
+        genBtn = new JButton("Generate Task");
+        genBtn.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
+        genBtn.setActionCommand(GEN_CMD);
+        genBtn.setMargin(new Insets(0, 32, 0, 32));
+
+        genBtn.addActionListener(new NewToDoTaskListener());
+    }
+
+
+    private void layoutEditorPanel(GroupLayout gl) {
+        JLabel name = getLabelForEditorArea("Task Name: ");
+        JLabel dscp = getLabelForEditorArea("Task Content: ");
+        JLabel type = getLabelForEditorArea("Task Type: ");
+
+        GroupLayout.SequentialGroup row = gl.createSequentialGroup();
+        GroupLayout.SequentialGroup column = gl.createSequentialGroup();
+
+        row.addGroup(gl.createParallelGroup().addComponent(name).addComponent(dscp).addComponent(type));
+        row.addGroup(gl.createParallelGroup().addComponent(taskName).addComponent(taskDscp).addComponent(taskType));
+
+        column.addGroup(gl.createParallelGroup().addComponent(name).addComponent(taskName));
+        column.addGap(70);
+        column.addGroup(gl.createParallelGroup().addComponent(dscp).addComponent(taskDscp));
+        column.addGap(70);
+        column.addGroup(gl.createParallelGroup().addComponent(type).addComponent(taskType));
+
+        gl.setHorizontalGroup(column);
+        gl.setVerticalGroup(row);
+    }
+
+    private void layoutCreationPanel(GroupLayout gl) {
+        JLabel dueDateLabel = getLabelForEditorArea("Task Due Date: ");
+        GroupLayout.SequentialGroup row = gl.createSequentialGroup();
+        GroupLayout.SequentialGroup column = gl.createSequentialGroup();
+        row.addGap(15);
+        row.addGroup(gl.createParallelGroup().addComponent(dueDateLabel));
+        row.addGroup(gl.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(taskDue).addComponent(genBtn));
+        column.addGroup(gl.createParallelGroup().addComponent(dueDateLabel).addComponent(taskDue));
+        column.addGap(346);
+        column.addGroup(gl.createParallelGroup().addComponent(genBtn));
+        gl.setHorizontalGroup(column);
+        gl.setVerticalGroup(row);
+    }
+
+    private JLabel getLabelForEditorArea(String s) {
         JLabel label = new JLabel(s);
         label.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
         return label;
     }
 
-    private void initializeToDoTaskJTable() {
-        toDoTaskTableModel = new MyTableModel();
-        table = new JTable(toDoTaskTableModel);
-        table.setPreferredScrollableViewportSize(new Dimension(TP_WIDTH - 10, SCL_PNL_HEIGHT - 10));
-        table.setFillsViewportHeight(false);
-        table.setRowHeight(30);
-        table.setOpaque(false);
-    }
 
-    private JLabel initializeTitle() {
-        JLabel titleLabel = new JLabel("All ToDo Tasks: ");
-        titleLabel.setFont(new Font(Font.SERIF, Font.BOLD, 28));
-        titleLabel.setPreferredSize(new Dimension(TP_WIDTH, TP_HEIGHT / 25));
-        return titleLabel;
-    }
-
+    // Represent a ListSelectionListener or an Observer for ToDoList that is accustomed to this program
     class TaskTableRendererListener implements ListSelectionListener, Observer {
-
-        /**
-         * Called whenever the value of the selection changes.
-         *
-         * @param e the event that characterizes the change.
-         */
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            if (e.getValueIsAdjusting() == false) {
-                updateTaskTable();
-            }
-        }
-
-        private void addTaskToTable(ToDoTask t) {
-            addRowToTable(
-                    t.getName(),
-                    t.getDescription(),
-                    t.getType(),
-                    t.getDueTime(),
-                    new Boolean(t.isDone()));
-        }
-
-        // Helper to add row dynamically at run time.
-        // MODIFIES: this
-        // EFFECTS:
-        private void addRowToTable(String n, String d, String t, String dueTime, Boolean f) {
-            Vector<Object> data = new Vector<>();
-            data.add(n);
-            data.add(d);
-            data.add(t);
-            data.add(dueTime);
-            data.add(f);
-            toDoTaskTableModel.addRow(data);
-        }
-
-        private void updateTaskTable() {
-            System.out.println("debug1");
-            while (toDoTaskTableModel.getRowCount() > 0) {
-                System.out.println("debug in1");
-                toDoTaskTableModel.setRowCount(0);
-                System.out.println("debug in2");
-            }
-            System.out.println("debug2");
-            if (app.getListCurrentIn() != null) {
-                for (ToDoTask t : app.getListCurrentIn()) {
-                    addTaskToTable(t);
-                }
-            }
-        }
 
         /**
          * This method is called whenever the observed object is changed. An
@@ -235,8 +226,56 @@ public class TasksPanel extends JPanel {
         public void update(Observable o, Object arg) {
             updateTaskTable();
         }
+
+        /**
+         * Called whenever the value of the selection changes.
+         *
+         * @param e the event that characterizes the change.
+         */
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (e.getValueIsAdjusting() == false) {
+                updateTaskTable();
+            }
+        }
+
+        // Extra Helper to update task table content dynamically at run time.
+        // EFFECTS: update task table by first clear all content, then re-render.
+        private void updateTaskTable() {
+            System.out.println("debug uTT S");
+            while (toDoTaskTableModel.getRowCount() > 0) {
+                System.out.println("debug uTT in reset TB 1");
+                toDoTaskTableModel.setRowCount(0);            // ToDo: <Debugging Mode> Hmmmm... squeeze it.
+                System.out.println("debug uTT in reset TB 2");
+            }
+            System.out.println("debug uTT E");
+            if (app.getListCurrentIn() != null) {
+                for (ToDoTask t : app.getListCurrentIn()) {
+                    addTaskToTable(t);
+                }
+            }
+        }
+
+        private void addTaskToTable(ToDoTask t) {
+            addRowToTable(t.getName(), t.getDescription(), t.getType(), t.getDueTime(), new Boolean(t.isDone()));
+        }
+
+        // Extra Helper to add row dynamically at run time.
+        // MODIFIES: this
+        // EFFECTS: add a row to table
+        private void addRowToTable(String n, String d, String t, String dueTime, Boolean f) {
+            Vector<Object> data = new Vector<>();
+            data.add(n);
+            data.add(d);
+            data.add(t);
+            data.add(dueTime);
+            data.add(f);
+            toDoTaskTableModel.addRow(data);
+        }
     }
 
+
+    // Represent a ActionListener that is accustomed to this program
     class NewToDoTaskListener implements ActionListener {
         /**
          * Invoked when an action occurs.
@@ -246,17 +285,17 @@ public class TasksPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand() == GEN_CMD) {
-                ToDoList crnt = app.getListCurrentIn();
-                if (crnt == null) {
-                    JOptionPane.showMessageDialog(
-                            null, "Select the ToDo List you want add Task to!",
-                            "System Error", JOptionPane.ERROR_MESSAGE);
+                if (app.getListCurrentIn() == null) {
+                    showWarningMessage("Select the ToDo List you want add Task to!");
                     return;
+                } else if (taskName.getText().length() == 0 || taskDscp.getText().length() == 0
+                        || taskType.getText().length() == 0 || taskDue.getText().length() == 0) {
+                    showWarningMessage("Text Field cannot be Empty!");
                 } else {
                     ToDoTask task = new ToDoTask(taskName.getText(), taskDscp.getText(),
                             taskType.getText(), taskDue.getText());
-                    crnt.addObserver((Observer) ll);
-                    crnt.addToDoTask(task);
+                    app.getListCurrentIn().addObserver((Observer) ll);
+                    app.getListCurrentIn().addToDoTask(task);
                     taskName.setText("");
                     taskDscp.setText("");
                     taskType.setText("");
@@ -264,8 +303,15 @@ public class TasksPanel extends JPanel {
                 }
             }
         }
+
+        // Extra Helper to prompt user warning message.
+        private void showWarningMessage(String wm) {
+            JOptionPane.showMessageDialog(null, wm, "System Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
+
+    // Represent a TableModel that is accustomed to this program
     class MyTableModel extends DefaultTableModel {
         private final String[] header = new String[]{
                 "Task Name",
@@ -280,6 +326,7 @@ public class TasksPanel extends JPanel {
             setColumnIdentifiers(header);
         }
 
+        // Extra Helper Method overrides AbstractTableModel up the type Hierarchy:
         // EFFECTS: Display last column of my table as CheckBox instead of String "true/false".
         @Override
         public Class getColumnClass(int c) {
@@ -296,10 +343,10 @@ public class TasksPanel extends JPanel {
         frame.setResizable(false);
         frame.setPreferredSize(new Dimension(TP_WIDTH + 100, TP_HEIGHT - 70));
         App a = new App();
-        ToDoList t = new ToDoList("name");
+        ToDoList t = new ToDoList("Default ToDo List");
         try {
             a.addToDoList(t);
-            a.enterToDoList("name");
+            a.enterToDoList("Default ToDo List");
         } catch (Exception e) {
             System.out.println("Impossible Situation");
         }

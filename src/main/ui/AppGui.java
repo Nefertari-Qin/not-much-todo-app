@@ -3,7 +3,6 @@ package ui;
 import model.App;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public class AppGui {
@@ -21,7 +20,7 @@ public class AppGui {
         JFrame appGui = new JFrame("Not Much ToDo App");
         appGui.setSize(WIDTH, HEIGHT);
         appGui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        appGui.setResizable(false);             //TODO
+        appGui.setResizable(false);
 
         TasksPanel tasksPanel = new TasksPanel(app);
         ListsPanel listsPanel = new ListsPanel(app, tasksPanel.getListListener());

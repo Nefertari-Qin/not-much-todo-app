@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 
 // Code & Idea reference:
 // The Construction of ToDoListsGUI relied on very careful examination of following source:
+// ---> B01-SmartHome           Optional Practice Problem
+// ---> A06-SimpleDrawingPlayer Lecture Lab
 // ---> C04-AlarmSystem         Lecture Lab
 // ---> ListDemo                https://docs.oracle.com/javase/tutorial/uiswing/components/index.html
 // ---> JList Java Tutorials    https://docs.oracle.com/javase/tutorial/uiswing/components/index.html
@@ -24,7 +26,7 @@ import java.time.LocalDateTime;
 //            Even though it was built from those template-like demo projects listed above,
 //            I did spent a ton of time searching and looking up related Java API.
 
-// Represent a GUI for ToDoList Panel
+// Represent a GUI for ListsPanel
 public class ListsPanel extends JPanel {
     public static final String NAME = "Nefertari";
     public static final String LIST_CREATION_PRFX = "ToDoLists";
@@ -55,33 +57,9 @@ public class ListsPanel extends JPanel {
         initializeJList();
         JPanel toDoListPanel = initializeToDoListPanel();
         JScrollPane listScrollPane = new JScrollPane(jtoDoLists);
-        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 4));
+        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH - 20, LP_HEIGHT / 4));
 
-        add(greetingLabel, BorderLayout.NORTH);
-        add(nameArea);
-        add(toDoListPanel);
-        add(listScrollPane);
-    }
-
-    public ListsPanel(App app) {
-        this();
-        this.app = app;
-    }
-
-    public ListsPanel() {
-        setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT));
-        setBackground(new Color(50, 50, 50, 50));
-        toDoListModel = new DefaultListModel();
-
-        JLabel greetingLabel = initializeGreeting();
-        JLabel nameArea = new JLabel(NAME + "!");
-        nameArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
-        initializeJList();
-        JPanel toDoListPanel = initializeToDoListPanel();
-        JScrollPane listScrollPane = new JScrollPane(jtoDoLists);
-        listScrollPane.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 4));
-
-        add(greetingLabel, BorderLayout.NORTH);
+        add(greetingLabel);
         add(nameArea);
         add(toDoListPanel);
         add(listScrollPane);
@@ -126,7 +104,7 @@ public class ListsPanel extends JPanel {
         initializeDelToDoListButton();
 
         toDoListPanel.add(listEditingArea, BorderLayout.WEST);
-        toDoListPanel.add(Box.createHorizontalStrut(40));
+        toDoListPanel.add(Box.createHorizontalStrut(25));
         toDoListPanel.add(newBtn, BorderLayout.EAST);
         toDoListPanel.add(Box.createHorizontalStrut(5));
         toDoListPanel.add(delBtn);
@@ -340,8 +318,9 @@ public class ListsPanel extends JPanel {
         JFrame frame = new JFrame("ToDoListsGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(LP_WIDTH + 100, LP_HEIGHT - 300));
-        frame.setResizable(false);
-        JComponent newContentPane = new ListsPanel(new App());
+        //frame.setResizable(false);
+        JComponent newContentPane = new ListsPanel(new App(), e -> {
+        });
         newContentPane.setOpaque(true); //content panes must be opaque
         frame.setContentPane(newContentPane);
         frame.pack();
