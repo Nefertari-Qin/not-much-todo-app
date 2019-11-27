@@ -65,6 +65,10 @@ public class ListsPanel extends JPanel {
         add(listScrollPane);
     }
 
+    public JList getJtoDoLists() {
+        return jtoDoLists;
+    }
+
     // Initialize a JLabel.
     // EFFECTS: return a JLabel with correct greeting message.
     private JLabel initializeGreeting() {
@@ -174,6 +178,7 @@ public class ListsPanel extends JPanel {
                 } else {
                     delBtn.setEnabled(true);
                     try {
+                        // String selected = (String) jtoDoLists.getSelectedValue();
                         app.enterToDoList((String) jtoDoLists.getSelectedValue());
                     } catch (DoesntExistException ex) {
                         JOptionPane.showMessageDialog(
@@ -309,6 +314,7 @@ public class ListsPanel extends JPanel {
         frame.setPreferredSize(new Dimension(LP_WIDTH + 100, LP_HEIGHT - 300));
         frame.setResizable(false);
         JComponent newContentPane = new ListsPanel(new App(), e -> {
+
         });
         newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);

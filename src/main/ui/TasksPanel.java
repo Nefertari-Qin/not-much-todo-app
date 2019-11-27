@@ -3,6 +3,7 @@ package ui;
 import model.App;
 import model.ToDoList;
 import model.ToDoTask;
+import model.exceptions.DoesntExistException;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -47,10 +48,12 @@ public class TasksPanel extends JPanel {
     private JButton genBtn;
     private JButton rmvBtn;
     private ListSelectionListener ll;
+    private JList jtoDoLists;
 
     public TasksPanel(App app) {
         this.app = app;
         ll = new TaskTableRendererListener();
+        jtoDoLists = null;
         initializeTasksPanelSetting();
 
         JLabel editorLabel = initializeEditorTitleLabel();
@@ -70,6 +73,10 @@ public class TasksPanel extends JPanel {
     // Getter
     public ListSelectionListener getListListener() {
         return ll;
+    }
+
+    public void setJtoDoList(JList jtoDoLists) {
+        this.jtoDoLists = jtoDoLists;
     }
 
     private void initializeTasksPanelSetting() {
@@ -234,7 +241,19 @@ public class TasksPanel extends JPanel {
          */
         @Override
         public void valueChanged(ListSelectionEvent e) {
+
             if (e.getValueIsAdjusting() == false) {
+                if (jtoDoLists.getSelectedIndex() == -1) {
+                    app.exitToDoList();
+                } else {
+                    try {
+                        app.enterToDoList((String) jtoDoLists.getSelectedValue());
+                    } catch (DoesntExistException ex) {
+                        JOptionPane.showMessageDialog(
+                                null, ex.getMessage(),
+                                "System Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
                 updateTaskTable();
             }
         }
