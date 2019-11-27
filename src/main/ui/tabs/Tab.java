@@ -1,13 +1,14 @@
 package ui.tabs;
 
 import ui.AppGui;
+import ui.TasksPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class Tab {
 
-    private AppGui appController;
+    private TasksPanel tasksController;
 
     public JPanel getTab() {
         return tab;
@@ -15,9 +16,9 @@ public abstract class Tab {
 
     protected JPanel tab;
 
-    //REQUIRES: AppMainGui controller that holds this tab
-    public Tab(AppGui appController) {
-        this.appController = appController;
+    //REQUIRES: tasksController that holds this tab
+    public Tab(TasksPanel tasksController) {
+        this.tasksController = tasksController;
         tab = new JPanel();
     }
 
@@ -31,8 +32,8 @@ public abstract class Tab {
     }
 
     //EFFECTS: returns the AppMainGui controller for this tab
-    public AppGui getAppController() {
-        return appController;
+    public TasksPanel getTasksController() {
+        return tasksController;
     }
 
 }

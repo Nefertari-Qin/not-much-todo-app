@@ -1,29 +1,30 @@
 package ui;
 
 import model.App;
-import ui.tabs.EditTab;
-import ui.tabs.ToDoListsTab;
-import ui.tabs.ToDoTasksTab;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public class AppGui {
 
-    public static final int WIDTH = 1200;
-    public static final int HEIGHT = 880;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 700;
+    private App app;
 
     public static void main(String[] args) {
         new AppGui();
     }
 
     private AppGui() {
+        app = new App();
         JFrame appGui = new JFrame("Not Much ToDo App");
         appGui.setSize(WIDTH, HEIGHT);
         appGui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        appGui.setResizable(false);             //TODO
 
-        JPanel tasksPanel = new TasksPanel();
-        JPanel listsPanel = new ListsPanel();
+        TasksPanel tasksPanel = new TasksPanel(app);
+        ListsPanel listsPanel = new ListsPanel(app, tasksPanel.getListListener());
 
         appGui.add(tasksPanel);
         appGui.add(listsPanel, BorderLayout.WEST);
