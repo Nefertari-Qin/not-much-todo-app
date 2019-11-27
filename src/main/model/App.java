@@ -16,7 +16,9 @@ public class App extends Observable {
     // and not currently in ant ToDoList
     public App() {
         nameListMap = new HashMap<String, ToDoList>();
-        addObserver(new MessagePrinter());
+        MessagePrinter mp = new MessagePrinter();
+        mp.printWebInfo();
+        addObserver(mp);
     }
 
     // Add a ToDoList to App
@@ -74,9 +76,9 @@ public class App extends Observable {
     public void enterToDoList(String name) throws DoesntExistException {
         if (!nameListMap.containsKey(name)) {
             throw new DoesntExistException(name);
-        } else if (listCurrentIn == null) {
-            listCurrentIn = nameListMap.get(name);
         }
+        listCurrentIn = nameListMap.get(name);
+
 
     }
 

@@ -208,7 +208,7 @@ public class AppTest {
         } catch (AlreadyExistException e) {
             fail("Don't expect ListAlreadyExistException");
         }
-        assertEquals(tl2, testApp.getListCurrentIn());
+        assertEquals(tl1, testApp.getListCurrentIn());
     }
 
     @Test

@@ -70,11 +70,7 @@ public class ListsPanel extends JPanel {
     private JLabel initializeGreeting() {
         String greeting = chooseGreetingString();
         JLabel greetingArea = new JLabel(greeting);
-        //JLabel nameArea = new JLabel(NAME + "!");
         greetingArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 28));
-        //greetingArea.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 25));
-        //nameArea.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
-        //nameArea.setPreferredSize(new Dimension(LP_WIDTH, LP_HEIGHT / 25));
         return greetingArea;
     }
 
@@ -179,7 +175,6 @@ public class ListsPanel extends JPanel {
                     delBtn.setEnabled(true);
                     try {
                         app.enterToDoList((String) jtoDoLists.getSelectedValue());
-                        // showTasksPanel(); // TODO: specify and implement this method later
                     } catch (DoesntExistException ex) {
                         JOptionPane.showMessageDialog(
                                 null, ex.getMessage(),
@@ -200,13 +195,9 @@ public class ListsPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand() == NEW_CMD) {
                 String name = (String) JOptionPane.showInputDialog(
-                        null,
-                        "Enter the name of new ToDo List:",
-                        "New ToDo List",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        "new todo list");
+                        null, "Enter the name of new ToDo List:",
+                        "New ToDo List", JOptionPane.PLAIN_MESSAGE,
+                        null, null, "new todo list");
                 if ((name != null) && (name.length() > 0)) {
                     createToDoList(name);
                 }
@@ -287,7 +278,6 @@ public class ListsPanel extends JPanel {
             if (size == 0) {
                 delBtn.setEnabled(false);
             } else if (index == toDoListModel.getSize()) {
-                //removed item in last position
                 index--;
             }
             return index;
@@ -314,14 +304,13 @@ public class ListsPanel extends JPanel {
     // TODO: Delete all of the following code when finished. They are here just for
     //  development use, I need to somehow visualize individual component.
     private static void createAndShowGUI() {
-        //Create and set up the window.
         JFrame frame = new JFrame("ToDoListsGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(LP_WIDTH + 100, LP_HEIGHT - 300));
-        //frame.setResizable(false);
+        frame.setResizable(false);
         JComponent newContentPane = new ListsPanel(new App(), e -> {
         });
-        newContentPane.setOpaque(true); //content panes must be opaque
+        newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
         frame.pack();
         frame.setVisible(true);

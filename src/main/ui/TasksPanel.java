@@ -242,14 +242,11 @@ public class TasksPanel extends JPanel {
         // Extra Helper to update task table content dynamically at run time.
         // EFFECTS: update task table by first clear all content, then re-render.
         private void updateTaskTable() {
-            System.out.println("debug uTT S");
             while (toDoTaskTableModel.getRowCount() > 0) {
-                System.out.println("debug uTT in reset TB 1");
-                toDoTaskTableModel.setRowCount(0);            // ToDo: <Debugging Mode> Hmmmm... squeeze it.
-                System.out.println("debug uTT in reset TB 2");
+                toDoTaskTableModel.setRowCount(0);
             }
-            System.out.println("debug uTT E");
-            if (app.getListCurrentIn() != null) {
+            ToDoList l = app.getListCurrentIn();
+            if (l != null) {
                 for (ToDoTask t : app.getListCurrentIn()) {
                     addTaskToTable(t);
                 }

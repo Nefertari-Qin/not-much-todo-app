@@ -1,7 +1,6 @@
 package network;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Observable;
@@ -19,7 +18,9 @@ public class MessagePrinter implements Observer {
         theURL = "https://www.students.cs.ubc.ca/~cs-210/2018w1/welcomemsg.html";
     }
 
-    public void printWebInfo() throws IOException {
+    // MODIFIES: this
+    // EFFECTS: print out course welcome message
+    public void printWebInfo() {
         try {
             URL url = new URL(theURL);
             br = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -30,10 +31,11 @@ public class MessagePrinter implements Observer {
                 sb.append(System.lineSeparator());
             }
             System.out.println(sb);
-        } finally {
             if (br != null) {
                 br.close();
             }
+        } catch (Exception e) {
+            System.out.println("Message Printer broke down!");
         }
     }
 
@@ -50,6 +52,7 @@ public class MessagePrinter implements Observer {
     public void update(Observable o, Object arg) {
         System.out.println(arg + " is added to App.");
         // TODO: rather than print to console, I will try something else
-        //  Current Idea is a pie chart, depending on whether my ability can chase my tastes
+        //  Current Idea is a pie chart, depending on whether or not my ability
+        //   can catch my tastes and also whether or not I have time .
     }
 }
