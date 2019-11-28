@@ -246,6 +246,7 @@ public class TasksPanel extends JPanel {
             if (!e.getValueIsAdjusting()) {
                 if (jtoDoLists.getSelectedIndex() == -1) {
                     app.exitToDoList();
+                    updateTaskTable();
                 } else {
                     try {
                         app.enterToDoList((String) jtoDoLists.getSelectedValue());
@@ -372,7 +373,7 @@ public class TasksPanel extends JPanel {
         JFrame frame = new JFrame("ToDoTasksGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        frame.setPreferredSize(new Dimension(TP_WIDTH + 100, TP_HEIGHT - 70));
+        frame.setPreferredSize(new Dimension(TP_WIDTH + 100, TP_HEIGHT));
         App a = new App();
         ToDoList t = new ToDoList("Default ToDo List");
         try {

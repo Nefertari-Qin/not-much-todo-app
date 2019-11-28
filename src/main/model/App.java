@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
+// Represent an App* for this project
 public class App extends Observable {
     private Map<String, ToDoList> nameListMap;
     private ToDoList listCurrentIn;
@@ -18,6 +19,7 @@ public class App extends Observable {
         nameListMap = new HashMap<>();
         MessagePrinter mp = new MessagePrinter();
         mp.printWebInfo();
+
         addObserver(mp);
     }
 
@@ -31,6 +33,7 @@ public class App extends Observable {
             throw new AlreadyExistException(name);
         }
         nameListMap.put(name, toDoList);
+
         setChanged();
         notifyObservers(name);
     }
@@ -78,8 +81,6 @@ public class App extends Observable {
             throw new DoesntExistException(name);
         }
         listCurrentIn = nameListMap.get(name);
-
-
     }
 
     // Exit the listCurrentIn

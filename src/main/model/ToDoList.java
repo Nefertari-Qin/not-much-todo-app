@@ -2,23 +2,39 @@ package model;
 
 import java.util.*;
 
+// Represents a ToDoList that contain arbitrary number of ToDoTasks
 public class ToDoList extends Observable implements Iterable<ToDoTask> {
     private String name;
     private List<ToDoTask> tasks;
 
+    // Constructor:
     public ToDoList(String name) {
         this.name = name;
         tasks = new ArrayList<>();
     }
 
+    // Getter
     public String getName() {
         return name;
     }
 
+    // Setter
     public void setName(String name) {
         this.name = name;
     }
 
+    // EFFECTS: return the number of ToDoTasks in this ToDoList
+    public int size() {
+        return tasks.size();
+    }
+
+    // EFFECTS: return true if this ToDoList contains given ToDoTask
+    public boolean contains(ToDoTask task) {
+        return tasks.contains(task);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: add a given ToDoTask to this ToDoList
     public void addToDoTask(ToDoTask task) {
         tasks.add(task);
         setChanged();

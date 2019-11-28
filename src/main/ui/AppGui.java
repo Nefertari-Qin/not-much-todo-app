@@ -7,16 +7,15 @@ import java.awt.*;
 
 public class AppGui {
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 600;
-    private App app;
+    static final int WIDTH = 1000;
+    static final int HEIGHT = 600;
 
     public static void main(String[] args) {
         new AppGui();
     }
 
     private AppGui() {
-        app = new App();
+        App app = new App();
         JFrame appGui = new JFrame("Not Much ToDo App");
         appGui.setSize(WIDTH, HEIGHT);
         appGui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

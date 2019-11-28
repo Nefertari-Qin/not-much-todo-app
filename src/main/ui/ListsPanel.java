@@ -210,6 +210,7 @@ public class ListsPanel extends JPanel {
         }
     }
 
+    
     // Represent a ActionListener for newBtn (ToDoList Creation) that is accustomed to this program
     class NewToDoListListener implements ActionListener {
         /**
@@ -258,6 +259,7 @@ public class ListsPanel extends JPanel {
             jtoDoLists.ensureIndexIsVisible(index);
         }
     }
+
 
     // Represent a ActionListener for delBtn (ToDoList Deletion) that is accustomed to this program
     class DelToDoListListener implements ActionListener {
@@ -339,7 +341,7 @@ public class ListsPanel extends JPanel {
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("ToDoListsGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(LP_WIDTH + 100, LP_HEIGHT));
+        frame.setPreferredSize(new Dimension(LP_WIDTH + 80, LP_HEIGHT));
         frame.setResizable(false);
         JComponent newContentPane = new ListsPanel(new App(), e -> {
 
