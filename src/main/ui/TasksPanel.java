@@ -31,12 +31,12 @@ import java.util.Vector;
 
 // Represent a GUI for TasksPanel
 public class TasksPanel extends JPanel {
-    public static final int TP_WIDTH = (AppGui.WIDTH / 4) * 3 - 25;
-    public static final int TP_HEIGHT = AppGui.HEIGHT;
-    public static final String GEN_CMD = "gen";
-    public static final String RMV_CMD = "rmv";
-    public static final int SCL_PNL_HEIGHT = 265;
-    public static final int TEXT_BOX_WIDTH = 12;
+    private static final int TP_WIDTH = (AppGui.WIDTH / 4) * 3 - 25;
+    private static final int TP_HEIGHT = AppGui.HEIGHT;
+    private static final String GEN_CMD = "gen";
+    private static final String RMV_CMD = "rmv";
+    private static final int SCL_PNL_HEIGHT = 265;
+    private static final int TEXT_BOX_WIDTH = 12;
     private static final int ROW_HEIGHT = 50;
 
     private App app;
@@ -243,19 +243,19 @@ public class TasksPanel extends JPanel {
         @Override
         public void valueChanged(ListSelectionEvent e) {
 
-            if (e.getValueIsAdjusting() == false) {
+            if (!e.getValueIsAdjusting()) {
                 if (jtoDoLists.getSelectedIndex() == -1) {
                     app.exitToDoList();
                 } else {
                     try {
                         app.enterToDoList((String) jtoDoLists.getSelectedValue());
+                        updateTaskTable();
                     } catch (DoesntExistException ex) {
                         JOptionPane.showMessageDialog(
                                 null, ex.getMessage(),
                                 "System Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
-                updateTaskTable();
             }
         }
 
@@ -301,7 +301,7 @@ public class TasksPanel extends JPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand() == GEN_CMD) {
+            if (e.getActionCommand().equals(GEN_CMD)) {
                 if (app.getListCurrentIn() == null) {
                     showWarningMessage("Select the ToDo List you want add Task to!");
                     return;

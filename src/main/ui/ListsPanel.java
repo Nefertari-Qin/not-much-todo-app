@@ -28,14 +28,14 @@ import java.time.LocalDateTime;
 
 // Represent a GUI for ListsPanel
 public class ListsPanel extends JPanel {
-    public static final String NAME = "Nefertari";
-    public static final String TODOLIST_LBL_PRFX = "ToDoLists";
-    public static final String NEW_CMD = "new";
-    public static final String DEL_CMD = "del";
+    private static final String NAME = "Nefertari";
+    private static final String TODOLIST_LBL_PRFX = "ToDoLists";
+    private static final String NEW_CMD = "new";
+    private static final String DEL_CMD = "del";
 
-    public static final int LP_WIDTH = AppGui.WIDTH / 4 - 10;
-    public static final int LP_HEIGHT = AppGui.HEIGHT;
-    public static final int MAX_LIST_VISIBLE_ROW = 8;
+    private static final int LP_WIDTH = AppGui.WIDTH / 4 - 10;
+    private static final int LP_HEIGHT = AppGui.HEIGHT;
+    private static final int MAX_LIST_VISIBLE_ROW = 8;
 
     private App app;
     private JList jtoDoLists;
@@ -192,7 +192,7 @@ public class ListsPanel extends JPanel {
          */
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            if (e.getValueIsAdjusting() == false) {
+            if (!e.getValueIsAdjusting()) {
                 if (jtoDoLists.getSelectedIndex() == -1) {
                     delBtn.setEnabled(false);
                     app.exitToDoList();
@@ -219,7 +219,7 @@ public class ListsPanel extends JPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand() == NEW_CMD) {
+            if (e.getActionCommand().equals(NEW_CMD)) {
                 String name = (String) JOptionPane.showInputDialog(
                         null, "Enter the name of new ToDo List:",
                         "New ToDo List", JOptionPane.PLAIN_MESSAGE,
@@ -240,12 +240,10 @@ public class ListsPanel extends JPanel {
                 ToDoList newList = new ToDoList(name);
                 app.addToDoList(newList);
                 app.enterToDoList(name);
-            } catch (AlreadyExistException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "System Error", JOptionPane.ERROR_MESSAGE);
-            } catch (DoesntExistException e) {
+                updateSelectionIndexAfterCreation(name);
+            } catch (AlreadyExistException | DoesntExistException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "System Error", JOptionPane.ERROR_MESSAGE);
             }
-            updateSelectionIndexAfterCreation(name);
         }
 
         private void updateSelectionIndexAfterCreation(String name) {
@@ -270,7 +268,7 @@ public class ListsPanel extends JPanel {
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand() == DEL_CMD) {
+            if (e.getActionCommand().equals(DEL_CMD)) {
                 int index = jtoDoLists.getSelectedIndex();
                 String name = (String) jtoDoLists.getSelectedValue();
                 removeJToDoListEntryAt(name, index);
@@ -291,12 +289,12 @@ public class ListsPanel extends JPanel {
             } else {
                 try {
                     app.removeToDoList(name);
+                    toDoListModel.remove(index);
                 } catch (DoesntExistException e) {
                     JOptionPane.showMessageDialog(
                             null, e.getMessage(),
                             "System Error", JOptionPane.ERROR_MESSAGE);
                 }
-                toDoListModel.remove(index);
             }
         }
 
@@ -328,7 +326,7 @@ public class ListsPanel extends JPanel {
             JLabel label = (JLabel) super.getListCellRendererComponent(
                     list, value, index, isSelected, cellHasFocus);
 
-            Font font = new Font((String) value, Font.TRUETYPE_FONT, 18);
+            Font font = new Font((String) value, Font.PLAIN, 18);
             label.setFont(font);
 
             return label;
