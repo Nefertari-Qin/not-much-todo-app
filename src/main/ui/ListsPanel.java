@@ -42,11 +42,11 @@ public class ListsPanel extends JPanel {
     private DefaultListModel toDoListModel;
     private JButton newBtn;
     private JButton delBtn;
-    private ListSelectionListener ll;
+    private ListSelectionListener listenerUpdatesTable;
 
-    public ListsPanel(App app, ListSelectionListener ll) {
+    public ListsPanel(App app, ListSelectionListener l) {
         this.app = app;
-        this.ll = ll;
+        this.listenerUpdatesTable = l;
         initializeListsPanelSetting();
 
         JLabel greetingLabel = initializeGreeting();
@@ -59,11 +59,6 @@ public class ListsPanel extends JPanel {
         add(nameLabel);
         add(editorPanel);
         add(listScrollPane);
-    }
-
-    // Getter
-    public JList getJtoDoLists() {
-        return jtoDoLists;
     }
 
     private void initializeListsPanelSetting() {
@@ -115,8 +110,8 @@ public class ListsPanel extends JPanel {
         jtoDoLists.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jtoDoLists.setSelectedIndex(0);
 
+        jtoDoLists.addListSelectionListener(listenerUpdatesTable);
         jtoDoLists.addListSelectionListener(new ToDoListListSelectionListener());
-        jtoDoLists.addListSelectionListener(ll);
 
         jtoDoLists.setVisibleRowCount(MAX_LIST_VISIBLE_ROW);
         jtoDoLists.setBackground(new Color(65, 65, 65, 100));
@@ -210,7 +205,7 @@ public class ListsPanel extends JPanel {
         }
     }
 
-    
+
     // Represent a ActionListener for newBtn (ToDoList Creation) that is accustomed to this program
     class NewToDoListListener implements ActionListener {
         /**

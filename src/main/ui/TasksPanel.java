@@ -48,7 +48,6 @@ public class TasksPanel extends JPanel {
     private JButton genBtn;
     private JButton rmvBtn;
     private ListSelectionListener ll;
-    private JList jtoDoLists;
 
     public TasksPanel(App app) {
         this.app = app;
@@ -73,14 +72,8 @@ public class TasksPanel extends JPanel {
         return ll;
     }
 
-    // Setter
-    public void setJtoDoList(JList jtoDoLists) {
-        this.jtoDoLists = jtoDoLists;
-    }
-
     private void initializeTasksPanelSetting() {
         ll = new TaskTableRendererListener();
-        jtoDoLists = null;
         setPreferredSize(new Dimension(TP_WIDTH, TP_HEIGHT));
         setBackground(new Color(50, 50, 50, 50));
         setOpaque(true);
@@ -244,19 +237,7 @@ public class TasksPanel extends JPanel {
         public void valueChanged(ListSelectionEvent e) {
 
             if (!e.getValueIsAdjusting()) {
-                if (jtoDoLists.getSelectedIndex() == -1) {
-                    app.exitToDoList();
-                    updateTaskTable();
-                } else {
-                    try {
-                        app.enterToDoList((String) jtoDoLists.getSelectedValue());
-                        updateTaskTable();
-                    } catch (DoesntExistException ex) {
-                        JOptionPane.showMessageDialog(
-                                null, ex.getMessage(),
-                                "System Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+                updateTaskTable();
             }
         }
 

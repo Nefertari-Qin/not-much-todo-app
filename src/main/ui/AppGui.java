@@ -23,7 +23,6 @@ public class AppGui {
 
         TasksPanel tasksPanel = new TasksPanel(app);
         ListsPanel listsPanel = new ListsPanel(app, tasksPanel.getListListener());
-        tasksPanel.setJtoDoList(listsPanel.getJtoDoLists());
 
         appGui.add(tasksPanel);
         appGui.add(listsPanel, BorderLayout.WEST);
