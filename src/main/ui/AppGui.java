@@ -8,7 +8,7 @@ import java.awt.*;
 public class AppGui {
 
     public static final int WIDTH = 1000;
-    public static final int HEIGHT = 700;
+    public static final int HEIGHT = 600;
     private App app;
 
     public static void main(String[] args) {

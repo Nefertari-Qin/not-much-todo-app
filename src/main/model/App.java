@@ -15,7 +15,7 @@ public class App extends Observable {
     // EFFECTS: create a new ToDoApp with no ToDoList exist
     // and not currently in ant ToDoList
     public App() {
-        nameListMap = new HashMap<String, ToDoList>();
+        nameListMap = new HashMap<>();
         MessagePrinter mp = new MessagePrinter();
         mp.printWebInfo();
         addObserver(mp);

@@ -13,6 +13,7 @@ public class Action {
         this.content = content;
     }
 
+    // Getters:
     public Date getTimeOfAction() {
         return timeOfAction;
     }

@@ -52,8 +52,6 @@ public class TasksPanel extends JPanel {
 
     public TasksPanel(App app) {
         this.app = app;
-        ll = new TaskTableRendererListener();
-        jtoDoLists = null;
         initializeTasksPanelSetting();
 
         JLabel editorLabel = initializeEditorTitleLabel();
@@ -75,11 +73,14 @@ public class TasksPanel extends JPanel {
         return ll;
     }
 
+    // Setter
     public void setJtoDoList(JList jtoDoLists) {
         this.jtoDoLists = jtoDoLists;
     }
 
     private void initializeTasksPanelSetting() {
+        ll = new TaskTableRendererListener();
+        jtoDoLists = null;
         setPreferredSize(new Dimension(TP_WIDTH, TP_HEIGHT));
         setBackground(new Color(50, 50, 50, 50));
         setOpaque(true);
@@ -126,7 +127,7 @@ public class TasksPanel extends JPanel {
     }
 
     private JTable initializeToDoTaskJTable() {
-        toDoTaskTableModel = new MyTableModel();
+        toDoTaskTableModel = new ToDoTasksTableModel();
         JTable table = new JTable(toDoTaskTableModel);
         table.setPreferredScrollableViewportSize(new Dimension(TP_WIDTH - 10, SCL_PNL_HEIGHT - 10));
         table.setFillsViewportHeight(false);
@@ -328,7 +329,7 @@ public class TasksPanel extends JPanel {
 
 
     // Represent a TableModel that is accustomed to this program
-    class MyTableModel extends DefaultTableModel {
+    class ToDoTasksTableModel extends DefaultTableModel {
         private final String[] header = new String[]{
                 "Task Name",
                 "Task Description",
@@ -337,16 +338,30 @@ public class TasksPanel extends JPanel {
                 "Finished?"
         };
 
-        private MyTableModel() {
+        // Inner Class Constructor
+        private ToDoTasksTableModel() {
             super();
             setColumnIdentifiers(header);
         }
 
-        // Extra Helper Method overrides AbstractTableModel up the type Hierarchy:
+        // Extra Helper Method overrides method in AbstractTableModel up the type Hierarchy:
         // EFFECTS: Display last column of my table as CheckBox instead of String "true/false".
         @Override
         public Class getColumnClass(int c) {
             return getValueAt(0, c).getClass();
+        }
+
+        // Make every cell but the ones in the last column un-editable.
+        // Extra Helper Method overrides method in DefaultTableModel up the type Hierarchy:
+        // EFFECTS: decide whether or not cell is editable
+        //             - if column >= 4, return true
+        //             - OW return false (i.e. starts being editable from the fifth column)
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            if (column >= 4) {
+                return true;
+            }
+            return false;
         }
     }
 
