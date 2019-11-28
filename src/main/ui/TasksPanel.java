@@ -3,7 +3,7 @@ package ui;
 import model.App;
 import model.ToDoList;
 import model.ToDoTask;
-import model.exceptions.DoesntExistException;
+
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
