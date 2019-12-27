@@ -58,11 +58,6 @@ public class ToDoList extends Observable implements Iterable<ToDoTask> {
         return Objects.hash(name);
     }
 
-    /**
-     * Returns an iterator over elements of type {@code T}.
-     *
-     * @return an Iterator.
-     */
     @Override
     public Iterator<ToDoTask> iterator() {
         return tasks.iterator();

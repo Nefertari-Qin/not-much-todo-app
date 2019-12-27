@@ -258,11 +258,6 @@ public class ListsPanel extends JPanel {
 
     // Represent a ActionListener for delBtn (ToDoList Deletion) that is accustomed to this program
     class DelToDoListListener implements ActionListener {
-        /**
-         * Invoked when an action occurs.
-         *
-         * @param e the event that indicates deleting selected ToDoList
-         */
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals(DEL_CMD)) {
