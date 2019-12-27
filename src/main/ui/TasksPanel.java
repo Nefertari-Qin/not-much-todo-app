@@ -286,7 +286,6 @@ public class TasksPanel extends JPanel {
             if (e.getActionCommand().equals(GEN_CMD)) {
                 if (app.getListCurrentIn() == null) {
                     showWarningMessage("Select the ToDo List you want add Task to!");
-                    return;
                 } else if (taskName.getText().length() == 0 || taskDscp.getText().length() == 0
                         || taskType.getText().length() == 0 || taskDue.getText().length() == 0) {
                     showWarningMessage("Text Field cannot be Empty!");
