@@ -105,7 +105,7 @@ public class App extends Observable {
         if (listCurrentIn == null) {
             throw new OutsideListException();
         }
-        if (listCurrentIn.getName() == newName) {
+        if (listCurrentIn.getName().equals(newName)) {
             throw new SameNameException();
         }
         nameListMap.remove(listCurrentIn.getName());
